@@ -816,10 +816,48 @@
     <span id="toast-message" class="text-white">Action completed successfully</span>
   </div>
 
+  <!-- PASSWORD CONFIRMATION MODAL FOR DELETION -->
+  <div id="password-modal" class="fixed inset-0 z-50 hidden bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-slate-900 border border-red-500/40 rounded-2xl max-w-sm w-full p-6 shadow-2xl relative">
+      <div class="flex items-center gap-3 mb-4">
+        <div class="w-10 h-10 rounded-xl bg-red-500/10 border border-red-500/30 flex items-center justify-center text-red-400">
+          <i class="fa-solid fa-lock text-lg"></i>
+        </div>
+        <div>
+          <h3 class="font-mono text-sm font-bold text-white">Admin Authentication</h3>
+          <p class="text-[11px] text-slate-400">Password required to delete design</p>
+        </div>
+      </div>
+      
+      <div class="space-y-3">
+        <div>
+          <label class="block text-[11px] font-mono text-slate-300 mb-1">Enter Master Password</label>
+          <input type="password" id="delete-password-input" placeholder="Enter password..." class="w-full bg-slate-950 border border-slate-700 focus:border-red-500 rounded-lg px-3 py-2 text-sm text-white font-mono outline-none transition-colors">
+        </div>
+        <p id="delete-error-msg" class="text-red-400 text-[11px] font-mono hidden flex items-center gap-1.5">
+          <i class="fa-solid fa-triangle-exclamation"></i> Incorrect password. Deletion blocked.
+        </p>
+      </div>
+
+      <div class="flex items-center justify-end gap-2 mt-5">
+        <button onclick="closePasswordModal()" class="px-3.5 py-1.5 rounded-lg text-xs font-mono text-slate-400 hover:text-white hover:bg-slate-800 transition-colors">
+          Cancel
+        </button>
+        <button onclick="confirmPasswordDeletion()" class="px-4 py-1.5 rounded-lg bg-red-500/20 hover:bg-red-500 text-red-300 hover:text-white border border-red-500/40 text-xs font-mono font-semibold transition-all">
+          Authorize Delete
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- =========================================================
        JAVASCRIPT: 3D CAD ENGINE, 2D DRAFTING & DATA MANAGEMENT
        ========================================================= -->
   <script>
+    /* Admin Security Passcode */
+    const MASTER_DELETE_PASSWORD = "Bharat_Rakesh@0903020";
+    let pendingDeleteId = null;
+
     /* ==========================================================
        1. DATA STORE: DEFAULT CAD & 2D DRAFTING PROJECTS
        ========================================================== */
@@ -1174,6 +1212,8 @@
     }
 
     /* Initialize Modal 3D Viewport */
+    let modalGridHelper = null;
+
     function initModal3D() {
       const container = document.getElementById('three-viewport');
       if (!container) return;
@@ -1181,12 +1221,12 @@
       modalScene = new THREE.Scene();
       modalScene.background = new THREE.Color(0x090d16);
 
-      // Engineering grid helper
-      const gridHelper = new THREE.GridHelper(10, 20, 0x00f2fe, 0x1e293b);
-      gridHelper.position.y = -1.8;
-      modalScene.add(gridHelper);
+      // Engineering grid helper (dynamically positioned under models)
+      modalGridHelper = new THREE.GridHelper(10, 20, 0x00f2fe, 0x1e293b);
+      modalGridHelper.position.y = -1.8;
+      modalScene.add(modalGridHelper);
 
-      modalCamera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 100);
+      modalCamera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 500);
       modalCamera.position.set(4.5, 3.5, 5.5);
 
       modalRenderer = new THREE.WebGLRenderer({ antialias: true });
@@ -1248,15 +1288,50 @@
         try {
           const loader = new THREE.STLLoader();
           const geometry = loader.parse(project.customSTLData);
-          geometry.center();
           geometry.computeVertexNormals();
+
+          // Auto-calculate geometry dimensions and bounding sphere
+          geometry.computeBoundingBox();
+          const bbox = geometry.boundingBox;
+          const size = new THREE.Vector3();
+          bbox.getSize(size);
+          const maxDim = Math.max(size.x, size.y, size.z);
+
+          // Center geometry at origin
+          geometry.center();
+
+          // Auto-scale to standard reference size so small or massive models look consistent
+          const targetSize = 3.5;
+          const scaleFactor = maxDim > 0 ? targetSize / maxDim : 1;
 
           const mat = getMaterial(currentFinish);
           const mesh = new THREE.Mesh(geometry, mat);
+          mesh.scale.set(scaleFactor, scaleFactor, scaleFactor);
+
           modalMeshGroup = new THREE.Group();
           modalMeshGroup.add(mesh);
           modalScene.add(modalMeshGroup);
-          resetCamera();
+
+          // Dynamically adjust the base floor grid to sit directly underneath the part
+          const scaledHeight = size.y * scaleFactor;
+          const bottomY = - (scaledHeight / 2) - 0.05;
+          if (modalGridHelper) {
+            modalGridHelper.position.y = bottomY;
+            // Expand grid size if model is wide
+            const scaledWidth = Math.max(size.x, size.z) * scaleFactor;
+            const targetGridSize = Math.max(10, Math.ceil(scaledWidth * 2.5));
+            modalScene.remove(modalGridHelper);
+            modalGridHelper = new THREE.GridHelper(targetGridSize, 20, 0x00f2fe, 0x1e293b);
+            modalGridHelper.position.y = bottomY;
+            modalScene.add(modalGridHelper);
+          }
+
+          // Adjust camera distance to frame the object
+          if (modalCamera && modalControls) {
+            modalCamera.position.set(targetSize * 1.3, targetSize * 1.0, targetSize * 1.6);
+            modalControls.target.set(0, 0, 0);
+            modalControls.update();
+          }
           return;
         } catch (e) {
           console.warn("Could not parse STL, falling back to procedural preset", e);
@@ -1266,6 +1341,9 @@
       // Procedural mechanical geometry
       modalMeshGroup = createMechanicalGeometry(project.presetShape || 'helical_gear');
       modalScene.add(modalMeshGroup);
+      if (modalGridHelper) {
+        modalGridHelper.position.y = -1.8;
+      }
       resetCamera();
     }
 
@@ -1691,7 +1769,7 @@
                   <i class="fa-solid fa-eye text-[9px]"></i> View Only
                 </span>
                 ${!project.isDefault ? `
-                  <button onclick="deleteProject('${project.id}')" title="Delete custom design" class="text-slate-500 hover:text-red-400 p-1.5 text-xs transition-colors">
+                  <button onclick="promptDeleteProject('${project.id}')" title="Delete design (Password Required)" class="text-slate-500 hover:text-red-400 p-1.5 text-xs transition-colors">
                     <i class="fa-solid fa-trash-can"></i>
                   </button>
                 ` : ''}
@@ -1717,11 +1795,41 @@
       if (allCountEl) allCountEl.textContent = projects.length;
     }
 
-    function deleteProject(id) {
-      projects = projects.filter(p => p.id !== id);
-      saveData();
-      renderCards();
-      showToast("Design removed from portfolio.");
+    /* Password Protected Deletion */
+    function promptDeleteProject(id) {
+      pendingDeleteId = id;
+      const modal = document.getElementById('password-modal');
+      const input = document.getElementById('delete-password-input');
+      const errorMsg = document.getElementById('delete-error-msg');
+      input.value = '';
+      errorMsg.classList.add('hidden');
+      modal.classList.remove('hidden');
+      setTimeout(() => input.focus(), 50);
+    }
+
+    function closePasswordModal() {
+      document.getElementById('password-modal').classList.add('hidden');
+      pendingDeleteId = null;
+    }
+
+    function confirmPasswordDeletion() {
+      const input = document.getElementById('delete-password-input');
+      const errorMsg = document.getElementById('delete-error-msg');
+
+      if (input.value === MASTER_DELETE_PASSWORD) {
+        if (pendingDeleteId) {
+          projects = projects.filter(p => p.id !== pendingDeleteId);
+          saveData();
+          renderCards();
+          closePasswordModal();
+          showToast("Design verified and permanently deleted.");
+        }
+      } else {
+        errorMsg.classList.remove('hidden');
+        input.classList.add('border-red-500');
+        input.value = '';
+        input.focus();
+      }
     }
 
     /* ==========================================================
