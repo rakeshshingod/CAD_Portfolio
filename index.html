@@ -16,10 +16,12 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
   
-  <!-- Three.js & Controls for 3D Viewer -->
+  <!-- Three.js & Controls & Multi-Format Loaders for 3D Viewer -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/STLLoader.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/OBJLoader.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
 
   <script>
     tailwind.config = {
@@ -100,7 +102,7 @@
         <div>
           <div class="font-mono text-lg font-bold tracking-wider text-white flex items-center gap-1.5">
             CAD<span class="text-cyan-400">PORTFOLIO</span>
-            <span class="text-[10px] bg-cyan-950/80 text-cyan-400 border border-cyan-500/30 px-1.5 py-0.5 rounded font-normal">v3.4</span>
+            <span class="text-[10px] bg-cyan-950/80 text-cyan-400 border border-cyan-500/30 px-1.5 py-0.5 rounded font-normal">PRO</span>
           </div>
           <p class="text-[10px] text-slate-400 tracking-widest font-mono">3D MECHANICAL & 2D DRAFTING</p>
         </div>
@@ -118,7 +120,7 @@
 
       <!-- Action Button -->
       <div class="flex items-center gap-4">
-        <button onclick="openUploadModal()" class="relative group overflow-hidden px-4 py-2.5 rounded-lg bg-gradient-to-r from-cyan-500 to-blue-600 text-slate-950 font-semibold text-xs tracking-wide uppercase transition-all duration-300 hover:shadow-[0_0_20px_rgba(0,242,254,0.6)] flex items-center gap-2">
+        <button onclick="promptUploadPassword()" class="relative group overflow-hidden px-4 py-2.5 rounded-lg bg-gradient-to-r from-cyan-500 to-blue-600 text-slate-950 font-semibold text-xs tracking-wide uppercase transition-all duration-300 hover:shadow-[0_0_20px_rgba(0,242,254,0.6)] flex items-center gap-2">
           <i class="fa-solid fa-plus-circle text-sm"></i>
           <span>Add Design</span>
         </button>
@@ -156,8 +158,8 @@
             <a href="#work" class="px-6 py-3 rounded-lg bg-slate-900 border border-cyan-500/40 text-cyan-400 font-mono text-sm hover:bg-cyan-500 hover:text-slate-950 transition-all duration-200 flex items-center gap-2 shadow-[0_0_15px_rgba(0,242,254,0.15)]">
               <i class="fa-solid fa-cube"></i> Explore My Work
             </a>
-            <button onclick="openUploadModal()" class="px-6 py-3 rounded-lg bg-slate-800/60 hover:bg-slate-800 text-slate-200 font-mono text-sm transition-all border border-slate-700 flex items-center gap-2">
-              <i class="fa-solid fa-cloud-arrow-up text-cyan-400"></i> Upload New CAD
+            <button onclick="promptUploadPassword()" class="px-6 py-3 rounded-lg bg-slate-800/60 hover:bg-slate-800 text-slate-200 font-mono text-sm transition-all border border-slate-700 flex items-center gap-2">
+              <i class="fa-solid fa-cloud-arrow-up text-cyan-400"></i> Add Design
             </button>
           </div>
 
@@ -183,7 +185,7 @@
           <div class="relative rounded-2xl bg-gradient-to-b from-slate-900 via-slate-900 to-slate-950 p-4 border border-cyan-500/30 shadow-[0_0_30px_rgba(0,242,254,0.15)]">
             <div class="flex items-center justify-between pb-3 border-b border-slate-800 text-xs font-mono text-slate-400">
               <span class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span> TURNTABLE CAD ENGINE</span>
-              <span class="text-cyan-400">LIVE 3D VIEW</span>
+              <span class="text-cyan-400">INTERACTIVE 3D</span>
             </div>
             
             <div id="hero-3d-canvas-container" class="w-full h-72 sm:h-80 rounded-lg overflow-hidden my-3 relative bg-slate-950 flex items-center justify-center cursor-grab active:cursor-grabbing">
@@ -194,10 +196,10 @@
             </div>
 
             <div class="flex items-center justify-between text-xs text-slate-400 pt-2 font-mono">
-              <span>Model: <span class="text-white">Helical Planetary Gear</span></span>
-              <button onclick="openViewerModal('sw-1')" class="text-cyan-400 hover:underline flex items-center gap-1">
-                Expand View <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
-              </button>
+              <span>Feature Part: <span class="text-white">Parametric Helical Gear</span></span>
+              <span class="text-cyan-400 flex items-center gap-1">
+                View Only <i class="fa-solid fa-lock text-[10px]"></i>
+              </span>
             </div>
           </div>
         </div>
@@ -229,10 +231,10 @@
       <!-- FOLDER SELECTION BUTTONS -->
       <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-7 gap-3 mb-10">
         <!-- All Folders -->
-        <button onclick="filterFolder('All')" data-folder="All" class="folder-tab active-folder flex flex-col p-3 rounded-xl border transition-all text-left group">
+        <button onclick="filterFolder('All')" data-folder="All" class="folder-tab active-folder flex flex-col p-3 rounded-xl border border-cyan-400 bg-cyan-950/40 shadow-[0_0_15px_rgba(0,242,254,0.2)] transition-all text-left group">
           <div class="flex items-center justify-between mb-2">
             <i class="fa-solid fa-folder-tree text-lg text-cyan-400"></i>
-            <span class="count-badge text-[11px] font-mono px-2 py-0.5 rounded-full bg-slate-800 text-slate-300">8</span>
+            <span class="count-badge text-[11px] font-mono px-2 py-0.5 rounded-full bg-slate-800 text-slate-300" id="count-All">0</span>
           </div>
           <span class="font-mono text-xs font-semibold text-white">All Works</span>
           <span class="text-[10px] text-slate-400">Master Archive</span>
@@ -242,7 +244,7 @@
         <button onclick="filterFolder('SolidWorks')" data-folder="SolidWorks" class="folder-tab flex flex-col p-3 rounded-xl border border-slate-800 bg-slate-900/60 hover:border-red-500/50 hover:bg-slate-900 transition-all text-left group">
           <div class="flex items-center justify-between mb-2">
             <i class="fa-solid fa-shapes text-lg text-red-500 group-hover:scale-110 transition-transform"></i>
-            <span class="count-badge text-[11px] font-mono px-2 py-0.5 rounded-full bg-slate-800 text-slate-300" id="count-SolidWorks">2</span>
+            <span class="count-badge text-[11px] font-mono px-2 py-0.5 rounded-full bg-slate-800 text-slate-300" id="count-SolidWorks">0</span>
           </div>
           <span class="font-mono text-xs font-semibold text-white">SolidWorks</span>
           <span class="text-[10px] text-slate-400">Assemblies</span>
@@ -252,7 +254,7 @@
         <button onclick="filterFolder('CATIA V5')" data-folder="CATIA V5" class="folder-tab flex flex-col p-3 rounded-xl border border-slate-800 bg-slate-900/60 hover:border-blue-500/50 hover:bg-slate-900 transition-all text-left group">
           <div class="flex items-center justify-between mb-2">
             <i class="fa-solid fa-plane text-lg text-blue-400 group-hover:scale-110 transition-transform"></i>
-            <span class="count-badge text-[11px] font-mono px-2 py-0.5 rounded-full bg-slate-800 text-slate-300" id="count-CATIA V5">1</span>
+            <span class="count-badge text-[11px] font-mono px-2 py-0.5 rounded-full bg-slate-800 text-slate-300" id="count-CATIA V5">0</span>
           </div>
           <span class="font-mono text-xs font-semibold text-white">CATIA V5</span>
           <span class="text-[10px] text-slate-400">Aerospace Surfaces</span>
@@ -262,7 +264,7 @@
         <button onclick="filterFolder('Siemens NX')" data-folder="Siemens NX" class="folder-tab flex flex-col p-3 rounded-xl border border-slate-800 bg-slate-900/60 hover:border-emerald-500/50 hover:bg-slate-900 transition-all text-left group">
           <div class="flex items-center justify-between mb-2">
             <i class="fa-solid fa-microchip text-lg text-emerald-400 group-hover:scale-110 transition-transform"></i>
-            <span class="count-badge text-[11px] font-mono px-2 py-0.5 rounded-full bg-slate-800 text-slate-300" id="count-Siemens NX">1</span>
+            <span class="count-badge text-[11px] font-mono px-2 py-0.5 rounded-full bg-slate-800 text-slate-300" id="count-Siemens NX">0</span>
           </div>
           <span class="font-mono text-xs font-semibold text-white">Siemens NX</span>
           <span class="text-[10px] text-slate-400">Die & Tooling</span>
@@ -272,7 +274,7 @@
         <button onclick="filterFolder('ANSYS')" data-folder="ANSYS" class="folder-tab flex flex-col p-3 rounded-xl border border-slate-800 bg-slate-900/60 hover:border-amber-500/50 hover:bg-slate-900 transition-all text-left group">
           <div class="flex items-center justify-between mb-2">
             <i class="fa-solid fa-wave-square text-lg text-amber-400 group-hover:scale-110 transition-transform"></i>
-            <span class="count-badge text-[11px] font-mono px-2 py-0.5 rounded-full bg-slate-800 text-slate-300" id="count-ANSYS">1</span>
+            <span class="count-badge text-[11px] font-mono px-2 py-0.5 rounded-full bg-slate-800 text-slate-300" id="count-ANSYS">0</span>
           </div>
           <span class="font-mono text-xs font-semibold text-white">ANSYS</span>
           <span class="text-[10px] text-slate-400">FEA & Thermal</span>
@@ -282,7 +284,7 @@
         <button onclick="filterFolder('AutoCAD')" data-folder="AutoCAD" class="folder-tab flex flex-col p-3 rounded-xl border border-slate-800 bg-slate-900/60 hover:border-rose-500/50 hover:bg-slate-900 transition-all text-left group">
           <div class="flex items-center justify-between mb-2">
             <i class="fa-solid fa-compass-drafting text-lg text-rose-500 group-hover:scale-110 transition-transform"></i>
-            <span class="count-badge text-[11px] font-mono px-2 py-0.5 rounded-full bg-slate-800 text-slate-300" id="count-AutoCAD">2</span>
+            <span class="count-badge text-[11px] font-mono px-2 py-0.5 rounded-full bg-slate-800 text-slate-300" id="count-AutoCAD">0</span>
           </div>
           <span class="font-mono text-xs font-semibold text-white">AutoCAD</span>
           <span class="text-[10px] text-slate-400">2D Drafting</span>
@@ -292,7 +294,7 @@
         <button onclick="filterFolder('Fusion 360')" data-folder="Fusion 360" class="folder-tab flex flex-col p-3 rounded-xl border border-slate-800 bg-slate-900/60 hover:border-orange-500/50 hover:bg-slate-900 transition-all text-left group">
           <div class="flex items-center justify-between mb-2">
             <i class="fa-solid fa-gear text-lg text-orange-400 group-hover:scale-110 transition-transform"></i>
-            <span class="count-badge text-[11px] font-mono px-2 py-0.5 rounded-full bg-slate-800 text-slate-300" id="count-Fusion 360">1</span>
+            <span class="count-badge text-[11px] font-mono px-2 py-0.5 rounded-full bg-slate-800 text-slate-300" id="count-Fusion 360">0</span>
           </div>
           <span class="font-mono text-xs font-semibold text-white">Fusion 360</span>
           <span class="text-[10px] text-slate-400">Generative CAD</span>
@@ -344,7 +346,7 @@
             </div>
 
             <p class="text-slate-300 text-sm leading-relaxed mb-6">
-              Experienced mechanical design professional with over 6 years of expertise in parametric CAD modeling, surface modeling, kinematic assemblies, and finite element stress analysis. Dedicated to creating production-ready components compliant with ISO 2768, ISO 1101, and ASME Y14.5 standards.
+              Experienced mechanical design professional with extensive expertise in parametric CAD modeling, surface modeling, kinematic assemblies, and finite element stress analysis. Dedicated to creating production-ready components compliant with ISO 2768, ISO 1101, and ASME Y14.5 standards.
             </p>
 
             <div class="space-y-3 font-mono text-xs border-t border-slate-800 pt-5">
@@ -368,7 +370,7 @@
           </div>
         </div>
 
-        <!-- Right: Software Mastery Bars & Philosophy -->
+        <!-- Right: Software Mastery Bars -->
         <div class="lg:col-span-7 space-y-8">
           <div>
             <div class="text-xs font-mono text-cyan-400 uppercase tracking-widest flex items-center gap-2 mb-2">
@@ -650,11 +652,9 @@
         
         <!-- Interactive 2D Drawing Canvas Area -->
         <div class="flex-1 blueprint-paper p-4 overflow-auto flex items-center justify-center relative">
-          
           <div id="blueprint-drawing-container" class="w-full max-w-3xl border-2 border-cyan-400/80 p-6 bg-[#001830] text-cyan-300 font-mono relative shadow-2xl rounded-sm">
             <!-- Dynamically populated 2D Blueprint SVG Drawing -->
           </div>
-
         </div>
 
         <!-- 2D Drawing Sheet Sidebar -->
@@ -747,19 +747,19 @@
             <option value="AutoCAD">AutoCAD</option>
             <option value="Fusion 360">Fusion 360</option>
           </select>
-          <p id="software-mode-indicator" class="text-[11px] font-mono text-cyan-400 mt-1">Mode: 3D CAD Inspection Part</p>
+          <p id="software-mode-indicator" class="text-[11px] font-mono text-cyan-400 mt-1">Mode: 3D CAD Rotating Part Inspection</p>
         </div>
 
         <!-- File Upload Area -->
         <div>
           <label class="block text-xs font-mono text-slate-300 mb-1.5 font-medium">
-            Attach Model / Drawing File <span class="text-slate-500 font-normal">(Optional .stl or blueprint file)</span>
+            Attach Model / Drawing File <span class="text-slate-500 font-normal">(.stl, .obj, .gltf, .glb, or .svg, .png, .jpg)</span>
           </label>
           <div id="drop-zone" class="border-2 border-dashed border-slate-700 hover:border-cyan-400/60 rounded-xl p-5 text-center cursor-pointer transition-colors bg-slate-950/40 relative">
-            <input type="file" id="upload-file-input" accept=".stl,.obj,.dwg,.dxf,.svg,.png,.jpg" class="absolute inset-0 opacity-0 cursor-pointer" onchange="handleFileSelect(this)">
+            <input type="file" id="upload-file-input" accept=".stl,.obj,.gltf,.glb,.svg,.png,.jpg,.jpeg,.dwg,.dxf" class="absolute inset-0 opacity-0 cursor-pointer" onchange="handleFileSelect(this)">
             <i class="fa-solid fa-cloud-arrow-up text-2xl text-cyan-400/80 mb-2"></i>
             <p class="text-xs text-slate-300 font-mono" id="file-label">Drop file here or <span class="text-cyan-400 underline">browse</span></p>
-            <p class="text-[10px] text-slate-500 mt-1">If no custom file is attached, an engineered geometric template is rendered.</p>
+            <p class="text-[10px] text-slate-500 mt-1">Supports: 3D (.stl, .obj, .gltf, .glb) and 2D (.svg, .png, .jpg, .dwg, .dxf)</p>
           </div>
           <div id="attached-file-badge" class="hidden mt-2 flex items-center justify-between bg-slate-950 px-3 py-1.5 rounded border border-cyan-500/30 text-xs font-mono text-cyan-400">
             <span id="attached-file-name" class="truncate">filename.stl</span>
@@ -816,6 +816,40 @@
     <span id="toast-message" class="text-white">Action completed successfully</span>
   </div>
 
+  <!-- PASSWORD CONFIRMATION MODAL FOR ADD DESIGN -->
+  <div id="upload-password-modal" class="fixed inset-0 z-50 hidden bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-slate-900 border border-cyan-500/40 rounded-2xl max-w-sm w-full p-6 shadow-2xl relative">
+      <div class="flex items-center gap-3 mb-4">
+        <div class="w-10 h-10 rounded-xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400">
+          <i class="fa-solid fa-shield-halved text-lg"></i>
+        </div>
+        <div>
+          <h3 class="font-mono text-sm font-bold text-white">Admin Authentication</h3>
+          <p class="text-[11px] text-slate-400">Password required to add design</p>
+        </div>
+      </div>
+      
+      <div class="space-y-3">
+        <div>
+          <label class="block text-[11px] font-mono text-slate-300 mb-1">Enter Master Password</label>
+          <input type="password" id="upload-password-input" placeholder="Enter password..." class="w-full bg-slate-950 border border-slate-700 focus:border-cyan-400 rounded-lg px-3 py-2 text-sm text-white font-mono outline-none transition-colors" onkeydown="if(event.key==='Enter') confirmUploadPassword()">
+        </div>
+        <p id="upload-error-msg" class="text-red-400 text-[11px] font-mono hidden flex items-center gap-1.5">
+          <i class="fa-solid fa-triangle-exclamation"></i> Incorrect password. Access denied.
+        </p>
+      </div>
+
+      <div class="flex items-center justify-end gap-2 mt-5">
+        <button onclick="closeUploadPasswordModal()" class="px-3.5 py-1.5 rounded-lg text-xs font-mono text-slate-400 hover:text-white hover:bg-slate-800 transition-colors">
+          Cancel
+        </button>
+        <button onclick="confirmUploadPassword()" class="px-4 py-1.5 rounded-lg bg-cyan-500/20 hover:bg-cyan-500 text-cyan-300 hover:text-slate-950 border border-cyan-500/40 text-xs font-mono font-semibold transition-all">
+          Authorize & Proceed
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- PASSWORD CONFIRMATION MODAL FOR DELETION -->
   <div id="password-modal" class="fixed inset-0 z-50 hidden bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
     <div class="bg-slate-900 border border-red-500/40 rounded-2xl max-w-sm w-full p-6 shadow-2xl relative">
@@ -832,7 +866,7 @@
       <div class="space-y-3">
         <div>
           <label class="block text-[11px] font-mono text-slate-300 mb-1">Enter Master Password</label>
-          <input type="password" id="delete-password-input" placeholder="Enter password..." class="w-full bg-slate-950 border border-slate-700 focus:border-red-500 rounded-lg px-3 py-2 text-sm text-white font-mono outline-none transition-colors">
+          <input type="password" id="delete-password-input" placeholder="Enter password..." class="w-full bg-slate-950 border border-slate-700 focus:border-red-500 rounded-lg px-3 py-2 text-sm text-white font-mono outline-none transition-colors" onkeydown="if(event.key==='Enter') confirmPasswordDeletion()">
         </div>
         <p id="delete-error-msg" class="text-red-400 text-[11px] font-mono hidden flex items-center gap-1.5">
           <i class="fa-solid fa-triangle-exclamation"></i> Incorrect password. Deletion blocked.
@@ -858,23 +892,17 @@
     const MASTER_DELETE_PASSWORD = "Bharat_Rakesh@0903020";
     let pendingDeleteId = null;
 
-    /* ==========================================================
-       1. DATA STORE: DEFAULT CAD & 2D DRAFTING PROJECTS
-       ========================================================== */
-    // Pre-included designs have been emptied so only your uploaded designs appear
-    const DEFAULT_PROJECTS = [];
-
+    /* Projects Storage */
     let projects = [];
     let currentFolderFilter = "All";
     let active3DProject = null;
 
-    /* Initialize from LocalStorage or Defaults */
+    /* Initialize from LocalStorage */
     function initData() {
       const stored = localStorage.getItem('cad_portfolio_designs');
       if (stored) {
         try {
           const parsed = JSON.parse(stored);
-          // Filter out any legacy pre-included default projects stored in browser cache
           projects = parsed.filter(p => !p.isDefault);
           saveData();
         } catch(e) {
@@ -892,142 +920,55 @@
       localStorage.setItem('cad_portfolio_designs', JSON.stringify(projects));
     }
 
+    function updateFolderCounters() {
+      const folders = ['SolidWorks', 'CATIA V5', 'Siemens NX', 'ANSYS', 'AutoCAD', 'Fusion 360'];
+      let total = projects.length;
+      const countAllEl = document.getElementById('count-All');
+      if (countAllEl) countAllEl.textContent = total;
+
+      folders.forEach(folder => {
+        const count = projects.filter(p => p.folder === folder).length;
+        const el = document.getElementById(`count-${folder}`);
+        if (el) el.textContent = count;
+      });
+    }
+
     /* ==========================================================
-       2. THREE.JS 3D CAD ENGINE (HERO & MODAL)
+       THREE.JS 3D CAD ENGINE (HERO & MODAL)
        ========================================================= */
     let heroScene, heroCamera, heroRenderer, heroMesh;
     let modalScene, modalCamera, modalRenderer, modalMeshGroup, modalControls;
+    let modalGridHelper = null;
     let isAutoRotating = true;
     let isWireframe = false;
     let currentFinish = 'steel';
 
-    // Geometry generators for industrial mechanical parts
+    // Geometry generator for hero visualization and default fallback
     function createMechanicalGeometry(shapeType) {
       const group = new THREE.Group();
 
-      if (shapeType === 'helical_gear') {
-        const bodyGeo = new THREE.CylinderGeometry(2.4, 2.4, 1.2, 48);
-        const boreGeo = new THREE.CylinderGeometry(0.8, 0.8, 1.25, 32);
-        const rimGeo = new THREE.TorusGeometry(2.1, 0.25, 16, 48);
-        rimGeo.rotateX(Math.PI / 2);
+      const bodyGeo = new THREE.CylinderGeometry(2.4, 2.4, 1.2, 48);
+      const rimGeo = new THREE.TorusGeometry(2.1, 0.25, 16, 48);
+      rimGeo.rotateX(Math.PI / 2);
 
-        const body = new THREE.Mesh(bodyGeo, getMaterial(currentFinish));
-        const rim = new THREE.Mesh(rimGeo, getMaterial(currentFinish));
-        group.add(body);
-        group.add(rim);
+      const body = new THREE.Mesh(bodyGeo, getMaterial(currentFinish));
+      const rim = new THREE.Mesh(rimGeo, getMaterial(currentFinish));
+      group.add(body);
+      group.add(rim);
 
-        // Gear Teeth
-        const toothCount = 20;
-        for (let i = 0; i < toothCount; i++) {
-          const angle = (i / toothCount) * Math.PI * 2;
-          const toothGeo = new THREE.BoxGeometry(0.35, 1.2, 0.65);
-          const tooth = new THREE.Mesh(toothGeo, getMaterial(currentFinish));
-          tooth.position.set(Math.cos(angle) * 2.5, 0, Math.sin(angle) * 2.5);
-          tooth.rotation.y = -angle + 0.35; // Helical tilt
-          group.add(tooth);
-        }
-
-        // Keyway Shaft
-        const shaftGeo = new THREE.CylinderGeometry(0.7, 0.7, 2.2, 32);
-        const shaft = new THREE.Mesh(shaftGeo, getMaterial('brass'));
-        group.add(shaft);
-
-      } else if (shapeType === 'spindle') {
-        const seg1 = new THREE.Mesh(new THREE.CylinderGeometry(1.0, 1.0, 4.0, 36), getMaterial(currentFinish));
-        const flange = new THREE.Mesh(new THREE.CylinderGeometry(2.2, 2.2, 0.5, 36), getMaterial(currentFinish));
-        flange.position.y = 0.8;
-        const nose = new THREE.Mesh(new THREE.CylinderGeometry(0.7, 1.0, 1.2, 36), getMaterial(currentFinish));
-        nose.position.y = 2.4;
-        const thread = new THREE.Mesh(new THREE.CylinderGeometry(0.6, 0.6, 1.0, 36), getMaterial('brass'));
-        thread.position.y = -2.3;
-
-        group.add(seg1);
-        group.add(flange);
-        group.add(nose);
-        group.add(thread);
-
-        // Flange Bolt Holes
-        for (let i = 0; i < 6; i++) {
-          const ang = (i / 6) * Math.PI * 2;
-          const bolt = new THREE.Mesh(new THREE.CylinderGeometry(0.18, 0.18, 0.6, 16), getMaterial('cyan'));
-          bolt.position.set(Math.cos(ang) * 1.6, 0.8, Math.sin(ang) * 1.6);
-          group.add(bolt);
-        }
-
-      } else if (shapeType === 'impeller') {
-        const hub = new THREE.Mesh(new THREE.CylinderGeometry(0.5, 2.0, 1.8, 36), getMaterial(currentFinish));
-        group.add(hub);
-
-        const bladeCount = 9;
-        for (let i = 0; i < bladeCount; i++) {
-          const ang = (i / bladeCount) * Math.PI * 2;
-          const bladeGeo = new THREE.BoxGeometry(0.12, 1.4, 1.8);
-          const blade = new THREE.Mesh(bladeGeo, getMaterial(currentFinish));
-          blade.position.set(Math.cos(ang) * 1.3, 0.2, Math.sin(ang) * 1.3);
-          blade.rotation.y = -ang + 0.8;
-          blade.rotation.z = 0.3;
-          group.add(blade);
-        }
-
-      } else if (shapeType === 'bearing_block') {
-        const block = new THREE.Mesh(new THREE.BoxGeometry(3.6, 2.6, 1.4), getMaterial(currentFinish));
-        const bore = new THREE.Mesh(new THREE.CylinderGeometry(1.0, 1.0, 1.5, 32), getMaterial('brass'));
-        bore.rotation.x = Math.PI / 2;
-        group.add(block);
-        group.add(bore);
-
-        // Dowel holes
-        const p1 = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.2, 1.5, 16), getMaterial('cyan'));
-        p1.rotation.x = Math.PI / 2;
-        p1.position.set(1.3, 0.8, 0);
-        const p2 = p1.clone();
-        p2.position.set(-1.3, -0.8, 0);
-        group.add(p1);
-        group.add(p2);
-
-      } else if (shapeType === 'suspension_bracket') {
-        const main = new THREE.Mesh(new THREE.BoxGeometry(1.6, 3.4, 0.8), getMaterial(currentFinish));
-        const ringTop = new THREE.Mesh(new THREE.TorusGeometry(0.9, 0.35, 16, 36), getMaterial(currentFinish));
-        ringTop.position.y = 1.6;
-        const ringBot = new THREE.Mesh(new THREE.TorusGeometry(0.7, 0.3, 16, 36), getMaterial(currentFinish));
-        ringBot.position.y = -1.6;
-
-        // Topology web strut
-        const web = new THREE.Mesh(new THREE.CylinderGeometry(0.25, 0.25, 3.0, 16), getMaterial('cyan'));
-        web.rotation.z = 0.5;
-
-        group.add(main);
-        group.add(ringTop);
-        group.add(ringBot);
-        group.add(web);
-
-      } else if (shapeType === 'gripper') {
-        const base = new THREE.Mesh(new THREE.CylinderGeometry(1.2, 1.4, 0.8, 24), getMaterial(currentFinish));
-        const finger1 = new THREE.Mesh(new THREE.BoxGeometry(0.4, 2.2, 0.5), getMaterial(currentFinish));
-        finger1.position.set(0.9, 1.2, 0);
-        finger1.rotation.z = -0.15;
-        const finger2 = new THREE.Mesh(new THREE.BoxGeometry(0.4, 2.2, 0.5), getMaterial(currentFinish));
-        finger2.position.set(-0.9, 1.2, 0);
-        finger2.rotation.z = 0.15;
-
-        const tip1 = new THREE.Mesh(new THREE.BoxGeometry(0.4, 0.3, 0.6), getMaterial('cyan'));
-        tip1.position.set(0.7, 2.3, 0);
-        const tip2 = tip1.clone();
-        tip2.position.set(-0.7, 2.3, 0);
-
-        group.add(base);
-        group.add(finger1);
-        group.add(finger2);
-        group.add(tip1);
-        group.add(tip2);
-
-      } else {
-        // Fallback default mechanical coupling
-        const c1 = new THREE.Mesh(new THREE.CylinderGeometry(1.8, 1.8, 0.8, 36), getMaterial(currentFinish));
-        const c2 = new THREE.Mesh(new THREE.CylinderGeometry(1.1, 1.1, 2.2, 36), getMaterial(currentFinish));
-        group.add(c1);
-        group.add(c2);
+      const toothCount = 20;
+      for (let i = 0; i < toothCount; i++) {
+        const angle = (i / toothCount) * Math.PI * 2;
+        const toothGeo = new THREE.BoxGeometry(0.35, 1.2, 0.65);
+        const tooth = new THREE.Mesh(toothGeo, getMaterial(currentFinish));
+        tooth.position.set(Math.cos(angle) * 2.5, 0, Math.sin(angle) * 2.5);
+        tooth.rotation.y = -angle + 0.35;
+        group.add(tooth);
       }
+
+      const shaftGeo = new THREE.CylinderGeometry(0.7, 0.7, 2.2, 32);
+      const shaft = new THREE.Mesh(shaftGeo, getMaterial('brass'));
+      group.add(shaft);
 
       return group;
     }
@@ -1048,7 +989,6 @@
           wireframe: isWireframe
         });
       } else {
-        // Hardened Steel
         return new THREE.MeshStandardMaterial({
           color: 0x94a3b8,
           metalness: 0.92,
@@ -1072,7 +1012,6 @@
       heroRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
       container.appendChild(heroRenderer.domElement);
 
-      // Lighting
       const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
       heroScene.add(ambientLight);
 
@@ -1084,11 +1023,9 @@
       dirLight2.position.set(-5, -5, -5);
       heroScene.add(dirLight2);
 
-      // Model
       heroMesh = createMechanicalGeometry('helical_gear');
       heroScene.add(heroMesh);
 
-      // Orbit controls for interactive rotating in hero
       const controls = new THREE.OrbitControls(heroCamera, heroRenderer.domElement);
       controls.enableDamping = true;
       controls.dampingFactor = 0.05;
@@ -1111,8 +1048,6 @@
     }
 
     /* Initialize Modal 3D Viewport */
-    let modalGridHelper = null;
-
     function initModal3D() {
       const container = document.getElementById('three-viewport');
       if (!container) return;
@@ -1120,7 +1055,6 @@
       modalScene = new THREE.Scene();
       modalScene.background = new THREE.Color(0x090d16);
 
-      // Engineering grid helper (dynamically positioned under models)
       modalGridHelper = new THREE.GridHelper(10, 20, 0x00f2fe, 0x1e293b);
       modalGridHelper.position.y = -1.8;
       modalScene.add(modalGridHelper);
@@ -1137,7 +1071,6 @@
       modalControls.enableDamping = true;
       modalControls.dampingFactor = 0.06;
 
-      // Lighting Setup
       const ambLight = new THREE.AmbientLight(0xffffff, 0.8);
       modalScene.add(ambLight);
 
@@ -1177,46 +1110,35 @@
     function loadModelIntoModal(project) {
       if (!modalScene) initModal3D();
 
-      // Remove existing mesh
       if (modalMeshGroup) {
         modalScene.remove(modalMeshGroup);
       }
 
-      // Check if user uploaded a custom STL
-      if (project.customSTLData) {
-        try {
-          const loader = new THREE.STLLoader();
-          const geometry = loader.parse(project.customSTLData);
-          geometry.computeVertexNormals();
-
-          // Auto-calculate geometry dimensions and bounding sphere
-          geometry.computeBoundingBox();
-          const bbox = geometry.boundingBox;
+      // Check if user uploaded a custom 3D model
+      if (project.custom3DData) {
+        const fileExt = (project.customFileName || '').split('.').pop().toLowerCase();
+        
+        const setupLoadedObject = (object) => {
+          const box = new THREE.Box3().setFromObject(object);
           const size = new THREE.Vector3();
-          bbox.getSize(size);
+          box.getSize(size);
           const maxDim = Math.max(size.x, size.y, size.z);
-
-          // Center geometry at origin
-          geometry.center();
-
-          // Auto-scale to standard reference size so small or massive models look consistent
+          
+          const center = new THREE.Vector3();
+          box.getCenter(center);
+          object.position.sub(center); // Center to origin
+          
           const targetSize = 3.5;
           const scaleFactor = maxDim > 0 ? targetSize / maxDim : 1;
-
-          const mat = getMaterial(currentFinish);
-          const mesh = new THREE.Mesh(geometry, mat);
-          mesh.scale.set(scaleFactor, scaleFactor, scaleFactor);
+          object.scale.multiplyScalar(scaleFactor);
 
           modalMeshGroup = new THREE.Group();
-          modalMeshGroup.add(mesh);
+          modalMeshGroup.add(object);
           modalScene.add(modalMeshGroup);
 
-          // Dynamically adjust the base floor grid to sit directly underneath the part
           const scaledHeight = size.y * scaleFactor;
-          const bottomY = - (scaledHeight / 2) - 0.05;
+          const bottomY = -(scaledHeight / 2) - 0.05;
           if (modalGridHelper) {
-            modalGridHelper.position.y = bottomY;
-            // Expand grid size if model is wide
             const scaledWidth = Math.max(size.x, size.z) * scaleFactor;
             const targetGridSize = Math.max(10, Math.ceil(scaledWidth * 2.5));
             modalScene.remove(modalGridHelper);
@@ -1225,19 +1147,51 @@
             modalScene.add(modalGridHelper);
           }
 
-          // Adjust camera distance to frame the object
           if (modalCamera && modalControls) {
             modalCamera.position.set(targetSize * 1.3, targetSize * 1.0, targetSize * 1.6);
             modalControls.target.set(0, 0, 0);
             modalControls.update();
           }
-          return;
+        };
+
+        try {
+          if (fileExt === 'obj') {
+            const loader = new THREE.OBJLoader();
+            const textDecoder = new TextDecoder();
+            const objText = typeof project.custom3DData === 'string' ? project.custom3DData : textDecoder.decode(project.custom3DData);
+            const obj = loader.parse(objText);
+            const mat = getMaterial(currentFinish);
+            obj.traverse((child) => {
+              if (child.isMesh) child.material = mat;
+            });
+            setupLoadedObject(obj);
+            return;
+          } else if (fileExt === 'gltf' || fileExt === 'glb') {
+            const loader = new THREE.GLTFLoader();
+            loader.parse(project.custom3DData, '', (gltf) => {
+              setupLoadedObject(gltf.scene);
+            }, (err) => {
+              console.warn("GLTF Parse Error", err);
+            });
+            return;
+          } else {
+            // STL loader
+            const loader = new THREE.STLLoader();
+            const geometry = loader.parse(project.custom3DData);
+            geometry.computeVertexNormals();
+            geometry.center();
+
+            const mat = getMaterial(currentFinish);
+            const mesh = new THREE.Mesh(geometry, mat);
+            setupLoadedObject(mesh);
+            return;
+          }
         } catch (e) {
-          console.warn("Could not parse STL, falling back to procedural preset", e);
+          console.warn("Could not parse 3D file, falling back to procedural preset", e);
         }
       }
 
-      // Procedural mechanical geometry
+      // Procedural mechanical geometry fallback
       modalMeshGroup = createMechanicalGeometry(project.presetShape || 'helical_gear');
       modalScene.add(modalMeshGroup);
       if (modalGridHelper) {
@@ -1246,7 +1200,6 @@
       resetCamera();
     }
 
-    /* 3D Controls Actions */
     function toggleTurntable() {
       isAutoRotating = !isAutoRotating;
       const spinIcon = document.getElementById('spin-icon');
@@ -1298,177 +1251,8 @@
     }
 
     /* ==========================================================
-       3. AUTOCAD 2D TECHNICAL BLUEPRINTS (PURE 2D DRAFTING)
+       AUTOCAD 2D TECHNICAL BLUEPRINTS (PURE 2D DRAFTING)
        ========================================================= */
-    function generateBlueprintSVG(preset) {
-      if (preset === 'hydraulic_valve') {
-        return `
-          <svg viewBox="0 0 750 480" class="w-full h-auto select-none" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-              <pattern id="crosshatch" width="8" height="8" patternTransform="rotate(45 0 0)" patternUnits="userSpaceOnUse">
-                <line x1="0" y1="0" x2="0" y2="8" stroke="#0284c7" stroke-width="0.75" />
-              </pattern>
-            </defs>
-
-            <!-- Drawing Border -->
-            <rect x="15" y="15" width="720" height="450" fill="none" stroke="#00f2fe" stroke-width="2"/>
-            <rect x="20" y="20" width="710" height="440" fill="none" stroke="#00f2fe" stroke-width="0.75"/>
-
-            <!-- Centerlines -->
-            <line x1="80" y1="210" x2="480" y2="210" stroke="#f43f5e" stroke-width="1" stroke-dasharray="14,3,4,3" />
-            <line x1="280" y1="70" x2="280" y2="350" stroke="#f43f5e" stroke-width="1" stroke-dasharray="14,3,4,3" />
-            <line x1="160" y1="70" x2="160" y2="350" stroke="#f43f5e" stroke-width="1" stroke-dasharray="14,3,4,3" />
-            <line x1="400" y1="70" x2="400" y2="350" stroke="#f43f5e" stroke-width="1" stroke-dasharray="14,3,4,3" />
-
-            <!-- Main Sectional Hatching Area -->
-            <path d="M 100 120 L 460 120 L 460 150 L 420 150 L 420 180 L 460 180 L 460 240 L 420 240 L 420 270 L 460 270 L 460 300 L 100 300 Z" fill="url(#crosshatch)" stroke="#38bdf8" stroke-width="1.5" />
-
-            <!-- Spool Cavities & Internal Ports -->
-            <rect x="140" y="150" width="40" height="120" fill="#001830" stroke="#00f2fe" stroke-width="2"/>
-            <rect x="260" y="150" width="40" height="120" fill="#001830" stroke="#00f2fe" stroke-width="2"/>
-            <rect x="380" y="150" width="40" height="120" fill="#001830" stroke="#00f2fe" stroke-width="2"/>
-            <rect x="120" y="195" width="320" height="30" fill="#001830" stroke="#00f2fe" stroke-width="2"/>
-
-            <!-- Dimension Lines & Extension Arrows -->
-            <!-- Horizontal Overall 280 mm -->
-            <line x1="100" y1="90" x2="460" y2="90" stroke="#38bdf8" stroke-width="1.2"/>
-            <line x1="100" y1="80" x2="100" y2="120" stroke="#38bdf8" stroke-width="0.8"/>
-            <line x1="460" y1="80" x2="460" y2="120" stroke="#38bdf8" stroke-width="0.8"/>
-            <polygon points="100,90 110,87 110,93" fill="#38bdf8" />
-            <polygon points="460,90 450,87 450,93" fill="#38bdf8" />
-            <text x="265" y="84" fill="#00f2fe" font-size="11" font-weight="bold">280.00 ±0.05</text>
-
-            <!-- Vertical Overall 180 mm -->
-            <line x1="60" y1="120" x2="60" y2="300" stroke="#38bdf8" stroke-width="1.2"/>
-            <line x1="50" y1="120" x2="100" y2="120" stroke="#38bdf8" stroke-width="0.8"/>
-            <line x1="50" y1="300" x2="100" y2="300" stroke="#38bdf8" stroke-width="0.8"/>
-            <polygon points="60,120 57,130 63,130" fill="#38bdf8" />
-            <polygon points="60,300 57,290 63,290" fill="#38bdf8" />
-            <text x="18" y="215" fill="#00f2fe" font-size="11" font-weight="bold" transform="rotate(-90 42 215)">Ø 180.00 H7</text>
-
-            <!-- Port Diameter Callout with Leader -->
-            <path d="M 280 150 L 320 110 L 380 110" fill="none" stroke="#f43f5e" stroke-width="1.2"/>
-            <polygon points="280,150 286,143 289,148" fill="#f43f5e"/>
-            <text x="325" y="105" fill="#f43f5e" font-size="10">Ø 32.00 +0.015/-0.000 (PORT P)</text>
-
-            <!-- GD&T Feature Control Frame -->
-            <g transform="translate(140, 330)">
-              <rect x="0" y="0" width="130" height="24" fill="#001830" stroke="#00f2fe" stroke-width="1"/>
-              <line x1="26" y1="0" x2="26" y2="24" stroke="#00f2fe" stroke-width="1"/>
-              <line x1="80" y1="0" x2="80" y2="24" stroke="#00f2fe" stroke-width="1"/>
-              <line x1="105" y1="0" x2="105" y2="24" stroke="#00f2fe" stroke-width="1"/>
-              <text x="7" y="17" fill="#00f2fe" font-size="14">⌖</text>
-              <text x="32" y="16" fill="#00f2fe" font-size="11">Ø 0.015 Ⓜ</text>
-              <text x="88" y="16" fill="#00f2fe" font-size="11">A</text>
-              <text x="114" y="16" fill="#00f2fe" font-size="11">B</text>
-            </g>
-
-            <!-- Orthographic Right View Projection -->
-            <g transform="translate(520, 120)">
-              <rect x="0" y="0" width="160" height="180" fill="#001830" stroke="#00f2fe" stroke-width="1.5"/>
-              <circle cx="80" cy="90" r="50" fill="none" stroke="#38bdf8" stroke-width="1.5"/>
-              <circle cx="80" cy="90" r="25" fill="none" stroke="#00f2fe" stroke-width="1.5"/>
-              <!-- Bolt Circle -->
-              <circle cx="80" cy="90" r="68" fill="none" stroke="#f43f5e" stroke-dasharray="6,4" stroke-width="1"/>
-              <circle cx="80" cy="22" r="5" fill="#38bdf8"/>
-              <circle cx="80" cy="158" r="5" fill="#38bdf8"/>
-              <circle cx="148" cy="90" r="5" fill="#38bdf8"/>
-              <circle cx="12" cy="90" r="5" fill="#38bdf8"/>
-              <text x="45" y="195" fill="#94a3b8" font-size="9">SECTION A-A / END ELEVATION</text>
-            </g>
-
-            <!-- Official ISO Drafting Title Block -->
-            <g transform="translate(430, 360)">
-              <rect x="0" y="0" width="290" height="90" fill="#001020" stroke="#00f2fe" stroke-width="1.5"/>
-              <line x1="0" y1="22" x2="290" y2="22" stroke="#00f2fe" stroke-width="1"/>
-              <line x1="0" y1="45" x2="290" y2="45" stroke="#00f2fe" stroke-width="1"/>
-              <line x1="0" y1="68" x2="290" y2="68" stroke="#00f2fe" stroke-width="1"/>
-              <line x1="140" y1="22" x2="140" y2="90" stroke="#00f2fe" stroke-width="1"/>
-
-              <text x="10" y="16" fill="#00f2fe" font-size="11" font-weight="bold">AUTOCAD 2D ENGINEERING DRAFT</text>
-              <text x="10" y="37" fill="#94a3b8" font-size="9">DWG NO: ACAD-HYD-7721</text>
-              <text x="150" y="37" fill="#94a3b8" font-size="9">SCALE: 1:1</text>
-              <text x="10" y="60" fill="#94a3b8" font-size="9">MATERIAL: GGG-40 DUCTILE</text>
-              <text x="150" y="60" fill="#94a3b8" font-size="9">PROJECTION: 1ST ANGLE</text>
-              <text x="10" y="82" fill="#38bdf8" font-size="9">SHEET 1 OF 1 (A2)</text>
-              <text x="150" y="82" fill="#38bdf8" font-size="9">STATUS: APPROVED</text>
-            </g>
-          </svg>
-        `;
-      } else {
-        // Flange coupling 2D draft
-        return `
-          <svg viewBox="0 0 750 480" class="w-full h-auto select-none" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-              <pattern id="hatch2" width="6" height="6" patternTransform="rotate(45 0 0)" patternUnits="userSpaceOnUse">
-                <line x1="0" y1="0" x2="0" y2="6" stroke="#0284c7" stroke-width="0.75" />
-              </pattern>
-            </defs>
-
-            <rect x="15" y="15" width="720" height="450" fill="none" stroke="#00f2fe" stroke-width="2"/>
-            <rect x="20" y="20" width="710" height="440" fill="none" stroke="#00f2fe" stroke-width="0.75"/>
-
-            <line x1="60" y1="220" x2="480" y2="220" stroke="#f43f5e" stroke-width="1.2" stroke-dasharray="14,3,4,3" />
-
-            <!-- Flange Section Top & Bottom -->
-            <path d="M 120 100 L 220 100 L 220 160 L 380 160 L 380 190 L 120 190 Z" fill="url(#hatch2)" stroke="#38bdf8" stroke-width="1.5"/>
-            <path d="M 120 250 L 380 250 L 380 280 L 220 280 L 220 340 L 120 340 Z" fill="url(#hatch2)" stroke="#38bdf8" stroke-width="1.5"/>
-
-            <!-- Center Shaft Hole -->
-            <rect x="120" y="190" width="260" height="60" fill="#001830" stroke="#00f2fe" stroke-width="1.5"/>
-
-            <!-- Flange Bolt Holes -->
-            <rect x="150" y="115" width="25" height="45" fill="#001830" stroke="#f43f5e" stroke-width="1.2"/>
-            <rect x="150" y="280" width="25" height="45" fill="#001830" stroke="#f43f5e" stroke-width="1.2"/>
-
-            <!-- Dimensions -->
-            <line x1="120" y1="80" x2="380" y2="80" stroke="#38bdf8" stroke-width="1"/>
-            <polygon points="120,80 130,77 130,83" fill="#38bdf8"/>
-            <polygon points="380,80 370,77 370,83" fill="#38bdf8"/>
-            <text x="230" y="74" fill="#00f2fe" font-size="11" font-weight="bold">160.00 ±0.1</text>
-
-            <line x1="85" y1="100" x2="85" y2="340" stroke="#38bdf8" stroke-width="1"/>
-            <polygon points="85,100 82,110 88,110" fill="#38bdf8"/>
-            <polygon points="85,340 82,330 88,330" fill="#38bdf8"/>
-            <text x="45" y="225" fill="#00f2fe" font-size="11" font-weight="bold" transform="rotate(-90 70 225)">Ø 240.00</text>
-
-            <!-- Front Circular View -->
-            <g transform="translate(520, 130)">
-              <circle cx="80" cy="90" r="75" fill="#001830" stroke="#00f2fe" stroke-width="1.5"/>
-              <circle cx="80" cy="90" r="55" fill="none" stroke="#f43f5e" stroke-dasharray="6,4" stroke-width="1"/>
-              <circle cx="80" cy="90" r="30" fill="none" stroke="#38bdf8" stroke-width="1.5"/>
-              <!-- 6 Bolts -->
-              <circle cx="80" cy="35" r="5" fill="#f43f5e"/>
-              <circle cx="80" cy="145" r="5" fill="#f43f5e"/>
-              <circle cx="32" cy="62" r="5" fill="#f43f5e"/>
-              <circle cx="128" cy="62" r="5" fill="#f43f5e"/>
-              <circle cx="32" cy="118" r="5" fill="#f43f5e"/>
-              <circle cx="128" cy="118" r="5" fill="#f43f5e"/>
-              <text x="40" y="195" fill="#94a3b8" font-size="9">FRONT PROJECTION</text>
-            </g>
-
-            <!-- Title Block -->
-            <g transform="translate(430, 360)">
-              <rect x="0" y="0" width="290" height="90" fill="#001020" stroke="#00f2fe" stroke-width="1.5"/>
-              <line x1="0" y1="22" x2="290" y2="22" stroke="#00f2fe" stroke-width="1"/>
-              <line x1="0" y1="45" x2="290" y2="45" stroke="#00f2fe" stroke-width="1"/>
-              <line x1="0" y1="68" x2="290" y2="68" stroke="#00f2fe" stroke-width="1"/>
-              <line x1="140" y1="22" x2="140" y2="90" stroke="#00f2fe" stroke-width="1"/>
-
-              <text x="10" y="16" fill="#00f2fe" font-size="11" font-weight="bold">AUTOCAD 2D ENGINEERING DRAFT</text>
-              <text x="10" y="37" fill="#94a3b8" font-size="9">DWG: FLANGE-C45-901</text>
-              <text x="150" y="37" fill="#94a3b8" font-size="9">SCALE: 1:2</text>
-              <text x="10" y="60" fill="#94a3b8" font-size="9">STEEL: C45 NORMALIZED</text>
-              <text x="150" y="60" fill="#94a3b8" font-size="9">KEYWAY: DIN 6885</text>
-              <text x="10" y="82" fill="#38bdf8" font-size="9">SHEET: 1 OF 1</text>
-              <text x="150" y="82" fill="#38bdf8" font-size="9">DRAWN: MECHANICAL ENG</text>
-            </g>
-          </svg>
-        `;
-      }
-    }
-
-    /* Open 2D Blueprint Modal for AutoCAD */
     function openBlueprintModal(projectId) {
       const proj = projects.find(p => p.id === projectId);
       if (!proj) return;
@@ -1478,7 +1262,22 @@
       document.getElementById('bp-spec-standard').textContent = proj.tolerances || 'ISO 128 / ASME Y14.5M';
 
       const container = document.getElementById('blueprint-drawing-container');
-      container.innerHTML = generateBlueprintSVG(proj.blueprintPreset || 'hydraulic_valve');
+      
+      if (proj.custom2DData) {
+        if (proj.custom2DData.includes('<svg')) {
+          container.innerHTML = proj.custom2DData;
+        } else {
+          container.innerHTML = `<img src="${proj.custom2DData}" class="max-w-full max-h-[65vh] object-contain mx-auto border border-cyan-500/30 rounded" alt="AutoCAD Blueprint">`;
+        }
+      } else {
+        container.innerHTML = `
+          <div class="text-center py-12">
+            <i class="fa-solid fa-compass-drafting text-4xl text-rose-500 mb-3"></i>
+            <p class="text-white text-sm">2D Technical Blueprint Sheet</p>
+            <p class="text-xs text-slate-400 mt-1">${proj.title}</p>
+          </div>
+        `;
+      }
 
       document.getElementById('blueprint-modal').classList.remove('hidden');
       document.body.style.overflow = 'hidden';
@@ -1490,13 +1289,12 @@
     }
 
     /* ==========================================================
-       4. 3D VIEWER MODAL LOGIC (NON-AUTOCAD)
+       3D VIEWER MODAL ROUTING
        ========================================================= */
     function openViewerModal(projectId) {
       const proj = projects.find(p => p.id === projectId);
       if (!proj) return;
 
-      // Route AutoCAD directly to 2D Blueprint Viewer
       if (proj.folder === 'AutoCAD') {
         openBlueprintModal(projectId);
         return;
@@ -1528,7 +1326,7 @@
     }
 
     /* ==========================================================
-       5. MY WORK (FOLDER FILTERING & CARDS RENDERING)
+       MY WORK (FOLDER FILTERING & CARDS RENDERING)
        ========================================================= */
     function getSoftwareIcon(folder) {
       switch(folder) {
@@ -1545,7 +1343,6 @@
     function filterFolder(folder) {
       currentFolderFilter = folder;
 
-      // Update folder tabs UI
       document.querySelectorAll('.folder-tab').forEach(tab => {
         if (tab.getAttribute('data-folder') === folder) {
           tab.classList.add('border-cyan-400', 'bg-cyan-950/40', 'shadow-[0_0_15px_rgba(0,242,254,0.2)]');
@@ -1612,7 +1409,6 @@
           <div class="px-5 py-2">
             <div onclick="${is2D ? `openBlueprintModal('${project.id}')` : `openViewerModal('${project.id}')`}" class="w-full h-40 rounded-xl bg-slate-950 border border-slate-800/80 flex items-center justify-center cursor-pointer relative overflow-hidden group-hover:border-cyan-500/40 transition-colors">
               ${is2D ? `
-                <!-- 2D Drafting Blueprint Vector Mock -->
                 <div class="w-full h-full blueprint-paper flex items-center justify-center p-3 opacity-80 group-hover:opacity-100 transition-opacity">
                   <svg viewBox="0 0 200 120" class="w-full h-full stroke-cyan-400 fill-none stroke-[1.2]">
                     <rect x="15" y="15" width="170" height="90" stroke="#00f2fe" stroke-width="1" stroke-dasharray="2,2"/>
@@ -1626,7 +1422,6 @@
                   </div>
                 </div>
               ` : `
-                <!-- 3D Rotating Mesh Mock Thumbnail -->
                 <div class="w-full h-full flex flex-col items-center justify-center bg-gradient-to-b from-slate-950 to-slate-900 group-hover:from-slate-900 group-hover:to-slate-950 transition-colors">
                   <div class="w-14 h-14 rounded-full bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400 group-hover:scale-110 transition-transform">
                     <i class="fa-solid fa-cube text-2xl"></i>
@@ -1644,54 +1439,62 @@
             </div>
           </div>
 
-          <!-- Specifications Tags -->
+          <!-- Specifications Tags & Actions -->
           <div class="p-5 pt-3">
-            <div class="space-y-1.5 text-[11px] font-mono text-slate-400 bg-slate-950/50 p-2.5 rounded-lg border border-slate-800/60 mb-3">
-              <div class="flex justify-between truncate">
-                <span class="text-slate-500">Material:</span>
-                <span class="text-slate-300 truncate max-w-[170px]">${project.material || 'Alloy'}</span>
+            <div class="grid grid-cols-2 gap-2 text-[10px] font-mono border-t border-slate-800/80 pt-3 mb-4">
+              <div class="text-slate-400">
+                <span>MAT:</span> <span class="text-white truncate block">${project.material || 'Alloy'}</span>
               </div>
-              <div class="flex justify-between truncate">
-                <span class="text-slate-500">Tolerance:</span>
-                <span class="text-cyan-400 truncate max-w-[170px]">${project.tolerances || 'Standard'}</span>
+              <div class="text-slate-400">
+                <span>TOL:</span> <span class="text-cyan-400 truncate block">${project.tolerances || 'ISO-2768'}</span>
               </div>
             </div>
 
-            <!-- Footer actions -->
-            <div class="pt-2 border-t border-slate-800 flex items-center justify-between">
-              <button onclick="${is2D ? `openBlueprintModal('${project.id}')` : `openViewerModal('${project.id}')`}" class="px-3.5 py-2 rounded-lg ${is2D ? 'bg-rose-500/10 hover:bg-rose-500 text-rose-400 hover:text-white border border-rose-500/30' : 'bg-cyan-500/10 hover:bg-cyan-500 text-cyan-400 hover:text-slate-950 border border-cyan-500/30'} text-xs font-mono font-bold transition-all flex items-center gap-1.5">
-                <i class="fa-solid ${is2D ? 'fa-compass-drafting' : 'fa-cube'}"></i> ${is2D ? 'Inspect 2D Blueprint' : 'Inspect in 3D'}
+            <div class="flex items-center justify-between">
+              <button onclick="${is2D ? `openBlueprintModal('${project.id}')` : `openViewerModal('${project.id}')`}" class="flex-1 py-2 rounded-lg bg-slate-800/60 hover:bg-cyan-500 hover:text-slate-950 text-slate-300 font-mono text-xs transition-all flex items-center justify-center gap-1.5 border border-slate-700/60">
+                <i class="fa-solid ${is2D ? 'fa-pen-ruler' : 'fa-cube'}"></i>
+                <span>Inspect ${is2D ? 'Drawing' : 'in 3D'}</span>
               </button>
-              
-              <div class="flex items-center gap-2">
-                <span class="text-[10px] font-mono text-cyan-400/80 bg-slate-950 px-2 py-1 rounded border border-slate-800 flex items-center gap-1">
-                  <i class="fa-solid fa-eye text-[9px]"></i> View Only
-                </span>
-                ${!project.isDefault ? `
-                  <button onclick="promptDeleteProject('${project.id}')" title="Delete design (Password Required)" class="text-slate-500 hover:text-red-400 p-1.5 text-xs transition-colors">
-                    <i class="fa-solid fa-trash-can"></i>
-                  </button>
-                ` : ''}
-              </div>
+
+              <button onclick="promptDeleteProject('${project.id}')" title="Delete Design (Password Required)" class="ml-2 w-9 h-9 rounded-lg bg-slate-900 border border-slate-800 hover:border-red-500/50 text-slate-400 hover:text-red-400 flex items-center justify-center transition-colors">
+                <i class="fa-regular fa-trash-can text-xs"></i>
+              </button>
             </div>
           </div>
         `;
 
         grid.appendChild(card);
       });
-
-      updateFolderCounters();
     }
 
-    function updateFolderCounters() {
-      const folders = ['SolidWorks', 'CATIA V5', 'Siemens NX', 'ANSYS', 'AutoCAD', 'Fusion 360'];
-      folders.forEach(f => {
-        const count = projects.filter(p => p.folder === f).length;
-        const el = document.getElementById(`count-${f}`);
-        if (el) el.textContent = count;
-      });
-      const allCountEl = document.querySelector('.folder-tab[data-folder="All"] .count-badge');
-      if (allCountEl) allCountEl.textContent = projects.length;
+    /* Password Protected Add Design */
+    function promptUploadPassword() {
+      const modal = document.getElementById('upload-password-modal');
+      const input = document.getElementById('upload-password-input');
+      const errorMsg = document.getElementById('upload-error-msg');
+      input.value = '';
+      errorMsg.classList.add('hidden');
+      modal.classList.remove('hidden');
+      setTimeout(() => input.focus(), 50);
+    }
+
+    function closeUploadPasswordModal() {
+      document.getElementById('upload-password-modal').classList.add('hidden');
+    }
+
+    function confirmUploadPassword() {
+      const input = document.getElementById('upload-password-input');
+      const errorMsg = document.getElementById('upload-error-msg');
+
+      if (input.value === MASTER_DELETE_PASSWORD) {
+        closeUploadPasswordModal();
+        openUploadModal();
+      } else {
+        errorMsg.classList.remove('hidden');
+        input.classList.add('border-red-500');
+        input.value = '';
+        input.focus();
+      }
     }
 
     /* Password Protected Deletion */
@@ -1720,6 +1523,7 @@
           projects = projects.filter(p => p.id !== pendingDeleteId);
           saveData();
           renderCards();
+          updateFolderCounters();
           closePasswordModal();
           showToast("Design verified and permanently deleted.");
         }
@@ -1732,9 +1536,11 @@
     }
 
     /* ==========================================================
-       6. ADD DESIGN (ADAPTIVE 3D CAD OR AUTOCAD 2D DRAFTING)
+       ADD DESIGN (ADAPTIVE 3D CAD OR AUTOCAD 2D DRAFTING)
        ========================================================== */
-    let uploadedSTLString = null;
+    let uploadedFileBuffer = null;
+    let uploadedFileName = null;
+    let uploaded2DDataUrl = null;
 
     function openUploadModal() {
       document.getElementById('upload-modal').classList.remove('hidden');
@@ -1757,33 +1563,45 @@
       if (select.value === 'AutoCAD') {
         modeIndicator.textContent = 'Mode: 2D Drafting (AutoCAD Blueprints)';
         modeIndicator.className = 'text-[11px] font-mono text-rose-400 mt-1';
-        dropZone.querySelector('p').innerHTML = 'Attach 2D drawing (.dwg, .dxf, .svg) or <span class="text-rose-400 underline">browse</span>';
+        dropZone.querySelector('p').innerHTML = 'Attach 2D drawing (.svg, .png, .jpg, .dwg, .dxf) or <span class="text-rose-400 underline">browse</span>';
       } else {
         modeIndicator.textContent = 'Mode: 3D CAD Rotating Part Inspection';
         modeIndicator.className = 'text-[11px] font-mono text-cyan-400 mt-1';
-        dropZone.querySelector('p').innerHTML = 'Attach 3D part (.stl) or <span class="text-cyan-400 underline">browse</span>';
+        dropZone.querySelector('p').innerHTML = 'Attach 3D model (.stl, .obj, .gltf, .glb) or <span class="text-cyan-400 underline">browse</span>';
       }
     }
 
     function handleFileSelect(input) {
       if (input.files && input.files[0]) {
         const file = input.files[0];
+        uploadedFileName = file.name;
         document.getElementById('attached-file-name').textContent = file.name;
         document.getElementById('attached-file-badge').classList.remove('hidden');
 
-        const reader = new FileReader();
-        reader.onload = function(e) {
-          uploadedSTLString = e.target.result;
-        };
-        // Read as binary string or array buffer
-        reader.readAsArrayBuffer(file);
+        const ext = file.name.split('.').pop().toLowerCase();
+        
+        if (['svg', 'png', 'jpg', 'jpeg'].includes(ext)) {
+          const reader = new FileReader();
+          reader.onload = function(e) {
+            uploaded2DDataUrl = e.target.result;
+          };
+          reader.readAsDataURL(file);
+        } else {
+          const reader = new FileReader();
+          reader.onload = function(e) {
+            uploadedFileBuffer = e.target.result;
+          };
+          reader.readAsArrayBuffer(file);
+        }
       }
     }
 
     function clearAttachedFile() {
       document.getElementById('upload-file-input').value = '';
       document.getElementById('attached-file-badge').classList.add('hidden');
-      uploadedSTLString = null;
+      uploadedFileBuffer = null;
+      uploadedFileName = null;
+      uploaded2DDataUrl = null;
     }
 
     function handleDesignUpload(event) {
@@ -1804,24 +1622,25 @@
         title: title,
         folder: folder,
         type: isAutoCAD ? '2d' : '3d',
-        presetShape: isAutoCAD ? null : 'spindle',
-        blueprintPreset: isAutoCAD ? 'hydraulic_valve' : null,
+        presetShape: 'helical_gear',
         material: material,
         tolerances: tolerances,
         process: process,
         gdt: gdt,
         description: desc,
-        customSTLData: uploadedSTLString,
+        custom3DData: isAutoCAD ? null : uploadedFileBuffer,
+        custom2DData: isAutoCAD ? uploaded2DDataUrl : null,
+        customFileName: uploadedFileName,
         isDefault: false
       };
 
       projects.unshift(newProject);
       saveData();
+      updateFolderCounters();
       closeUploadModal();
       filterFolder(folder);
       showToast(`Added "${title}" to ${folder} folder!`);
 
-      // Automatically inspect the newly added part
       setTimeout(() => {
         if (isAutoCAD) {
           openBlueprintModal(newProject.id);
@@ -1850,12 +1669,12 @@
         closeViewerModal();
         closeBlueprintModal();
         closeUploadModal();
+        closeUploadPasswordModal();
+        closePasswordModal();
       }
     });
 
-    /* ==========================================================
-       7. WINDOW ONLOAD BOOTSTRAP
-       ========================================================== */
+    /* Window Load Bootstrap */
     window.onload = function() {
       initData();
       initHero3D();
