@@ -1,0 +1,1858 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CAD PORTFOLIO | 3D Mechanical CAD & 2D Drafting Portfolio</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <!-- Google Fonts: Inter & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Three.js & Controls for 3D Viewer -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/STLLoader.js"></script>
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+          colors: {
+            cad: {
+              cyan: '#00f2fe',
+              neon: '#4facfe',
+              blueprint: '#003366',
+              grid: '#1e293b',
+              accent: '#38bdf8'
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Technical Engineering Blueprint Grid Background */
+    .blueprint-grid {
+      background-color: #0b0f19;
+      background-image: 
+        linear-gradient(rgba(0, 242, 254, 0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 242, 254, 0.05) 1px, transparent 1px),
+        linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+      background-size: 100px 100px, 100px 100px, 20px 20px, 20px 20px;
+      background-position: -1px -1px, -1px -1px, -1px -1px, -1px -1px;
+    }
+
+    .blueprint-paper {
+      background-color: #0d1b2a;
+      background-image: 
+        radial-gradient(rgba(0, 242, 254, 0.15) 1px, transparent 1px),
+        linear-gradient(to right, rgba(0, 242, 254, 0.05) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(0, 242, 254, 0.05) 1px, transparent 1px);
+      background-size: 20px 20px, 10px 10px, 10px 10px;
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0f172a;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #334155;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #00f2fe;
+    }
+  </style>
+</head>
+
+<body class="blueprint-grid text-slate-200 font-sans min-h-screen selection:bg-cyan-500 selection:text-slate-950 flex flex-col justify-between">
+
+  <!-- =========================================================
+       1. NAVIGATION HEADER
+       ========================================================= -->
+  <header class="sticky top-0 z-40 bg-slate-950/80 backdrop-blur-md border-b border-cyan-500/20">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+      
+      <!-- Logo -->
+      <a href="#" class="flex items-center gap-3 group">
+        <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-cyan-400 to-blue-600 flex items-center justify-center text-slate-950 shadow-[0_0_15px_rgba(0,242,254,0.4)] group-hover:scale-105 transition-transform">
+          <i class="fa-solid fa-cube text-xl"></i>
+        </div>
+        <div>
+          <div class="font-mono text-lg font-bold tracking-wider text-white flex items-center gap-1.5">
+            CAD<span class="text-cyan-400">PORTFOLIO</span>
+            <span class="text-[10px] bg-cyan-950/80 text-cyan-400 border border-cyan-500/30 px-1.5 py-0.5 rounded font-normal">v3.4</span>
+          </div>
+          <p class="text-[10px] text-slate-400 tracking-widest font-mono">3D MECHANICAL & 2D DRAFTING</p>
+        </div>
+      </a>
+
+      <!-- Navigation Links -->
+      <nav class="hidden md:flex items-center gap-8 text-sm font-medium">
+        <a href="#work" class="text-slate-300 hover:text-cyan-400 transition-colors flex items-center gap-2">
+          <i class="fa-regular fa-folder-open text-xs text-cyan-400"></i> My Work
+        </a>
+        <a href="#about" class="text-slate-300 hover:text-cyan-400 transition-colors flex items-center gap-2">
+          <i class="fa-regular fa-user text-xs text-cyan-400"></i> About Me
+        </a>
+      </nav>
+
+      <!-- Action Button -->
+      <div class="flex items-center gap-4">
+        <button onclick="openUploadModal()" class="relative group overflow-hidden px-4 py-2.5 rounded-lg bg-gradient-to-r from-cyan-500 to-blue-600 text-slate-950 font-semibold text-xs tracking-wide uppercase transition-all duration-300 hover:shadow-[0_0_20px_rgba(0,242,254,0.6)] flex items-center gap-2">
+          <i class="fa-solid fa-plus-circle text-sm"></i>
+          <span>Add Design</span>
+        </button>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- =========================================================
+       2. HERO SECTION
+       ========================================================= -->
+  <section class="relative overflow-hidden py-16 md:py-24 border-b border-slate-800/80">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+        
+        <!-- Left Hero Content -->
+        <div class="lg:col-span-7 space-y-6">
+          <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-cyan-950/60 border border-cyan-500/30 text-cyan-400 text-xs font-mono">
+            <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
+            PARAMETRIC 3D CAD & ENGINEERING DRAWINGS
+          </div>
+          
+          <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-white leading-tight">
+            Precision CAD & <br>
+            <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-sky-300 to-blue-500">
+              Interactive 3D Engineering
+            </span>
+          </h1>
+
+          <p class="text-slate-400 text-base sm:text-lg max-w-xl leading-relaxed">
+            Mechanical engineer specializing in high-tolerance CAD modeling, simulation-driven geometry, and ISO/ASME Y14.5 compliant 2D drafting. View all models directly in full 3D rotation or examine technical drafting blueprints.
+          </p>
+
+          <div class="pt-2 flex flex-wrap gap-4 items-center">
+            <a href="#work" class="px-6 py-3 rounded-lg bg-slate-900 border border-cyan-500/40 text-cyan-400 font-mono text-sm hover:bg-cyan-500 hover:text-slate-950 transition-all duration-200 flex items-center gap-2 shadow-[0_0_15px_rgba(0,242,254,0.15)]">
+              <i class="fa-solid fa-cube"></i> Explore My Work
+            </a>
+            <button onclick="openUploadModal()" class="px-6 py-3 rounded-lg bg-slate-800/60 hover:bg-slate-800 text-slate-200 font-mono text-sm transition-all border border-slate-700 flex items-center gap-2">
+              <i class="fa-solid fa-cloud-arrow-up text-cyan-400"></i> Upload New CAD
+            </button>
+          </div>
+
+          <!-- Feature badges -->
+          <div class="pt-6 grid grid-cols-3 gap-4 border-t border-slate-800/80">
+            <div>
+              <div class="text-2xl font-bold font-mono text-white">6</div>
+              <div class="text-xs text-slate-400 mt-0.5">Software Suites</div>
+            </div>
+            <div>
+              <div class="text-2xl font-bold font-mono text-cyan-400">360°</div>
+              <div class="text-xs text-slate-400 mt-0.5">Interactive Inspection</div>
+            </div>
+            <div>
+              <div class="text-2xl font-bold font-mono text-white">ASME</div>
+              <div class="text-xs text-slate-400 mt-0.5">Y14.5 GD&T Standards</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Hero Visual 3D Preview Card -->
+        <div class="lg:col-span-5">
+          <div class="relative rounded-2xl bg-gradient-to-b from-slate-900 via-slate-900 to-slate-950 p-4 border border-cyan-500/30 shadow-[0_0_30px_rgba(0,242,254,0.15)]">
+            <div class="flex items-center justify-between pb-3 border-b border-slate-800 text-xs font-mono text-slate-400">
+              <span class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span> TURNTABLE CAD ENGINE</span>
+              <span class="text-cyan-400">LIVE 3D VIEW</span>
+            </div>
+            
+            <div id="hero-3d-canvas-container" class="w-full h-72 sm:h-80 rounded-lg overflow-hidden my-3 relative bg-slate-950 flex items-center justify-center cursor-grab active:cursor-grabbing">
+              <!-- Three.js Canvas mounts here -->
+              <div class="absolute top-2 left-2 text-[10px] font-mono text-cyan-400 bg-slate-900/80 px-2 py-0.5 rounded border border-cyan-500/20 pointer-events-none">
+                <i class="fa-solid fa-arrows-rotate animate-spin text-[8px] mr-1"></i> Drag to Orbit
+              </div>
+            </div>
+
+            <div class="flex items-center justify-between text-xs text-slate-400 pt-2 font-mono">
+              <span>Model: <span class="text-white">Helical Planetary Gear</span></span>
+              <button onclick="openViewerModal('sw-1')" class="text-cyan-400 hover:underline flex items-center gap-1">
+                Expand View <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- =========================================================
+       3. "MY WORK" SECTION (SOFTWARE FOLDERS & CAD GALLERY)
+       ========================================================= -->
+  <section id="work" class="py-16 md:py-24 border-b border-slate-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <!-- Section Header -->
+      <div class="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
+        <div>
+          <div class="text-xs font-mono text-cyan-400 uppercase tracking-widest flex items-center gap-2">
+            <i class="fa-regular fa-folder text-cyan-400"></i> Engineering Projects Directory
+          </div>
+          <h2 class="text-3xl sm:text-4xl font-bold text-white mt-1">My Work</h2>
+        </div>
+        
+        <p class="text-sm text-slate-400 max-w-md">
+          Explore specialized design libraries organized by CAD and simulation environments. Select any folder to isolate parts or launch the interactive inspection viewports.
+        </p>
+      </div>
+
+      <!-- FOLDER SELECTION BUTTONS -->
+      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-7 gap-3 mb-10">
+        <!-- All Folders -->
+        <button onclick="filterFolder('All')" data-folder="All" class="folder-tab active-folder flex flex-col p-3 rounded-xl border transition-all text-left group">
+          <div class="flex items-center justify-between mb-2">
+            <i class="fa-solid fa-folder-tree text-lg text-cyan-400"></i>
+            <span class="count-badge text-[11px] font-mono px-2 py-0.5 rounded-full bg-slate-800 text-slate-300">8</span>
+          </div>
+          <span class="font-mono text-xs font-semibold text-white">All Works</span>
+          <span class="text-[10px] text-slate-400">Master Archive</span>
+        </button>
+
+        <!-- SolidWorks -->
+        <button onclick="filterFolder('SolidWorks')" data-folder="SolidWorks" class="folder-tab flex flex-col p-3 rounded-xl border border-slate-800 bg-slate-900/60 hover:border-red-500/50 hover:bg-slate-900 transition-all text-left group">
+          <div class="flex items-center justify-between mb-2">
+            <i class="fa-solid fa-shapes text-lg text-red-500 group-hover:scale-110 transition-transform"></i>
+            <span class="count-badge text-[11px] font-mono px-2 py-0.5 rounded-full bg-slate-800 text-slate-300" id="count-SolidWorks">2</span>
+          </div>
+          <span class="font-mono text-xs font-semibold text-white">SolidWorks</span>
+          <span class="text-[10px] text-slate-400">Assemblies</span>
+        </button>
+
+        <!-- CATIA V5 -->
+        <button onclick="filterFolder('CATIA V5')" data-folder="CATIA V5" class="folder-tab flex flex-col p-3 rounded-xl border border-slate-800 bg-slate-900/60 hover:border-blue-500/50 hover:bg-slate-900 transition-all text-left group">
+          <div class="flex items-center justify-between mb-2">
+            <i class="fa-solid fa-plane text-lg text-blue-400 group-hover:scale-110 transition-transform"></i>
+            <span class="count-badge text-[11px] font-mono px-2 py-0.5 rounded-full bg-slate-800 text-slate-300" id="count-CATIA V5">1</span>
+          </div>
+          <span class="font-mono text-xs font-semibold text-white">CATIA V5</span>
+          <span class="text-[10px] text-slate-400">Aerospace Surfaces</span>
+        </button>
+
+        <!-- Siemens NX -->
+        <button onclick="filterFolder('Siemens NX')" data-folder="Siemens NX" class="folder-tab flex flex-col p-3 rounded-xl border border-slate-800 bg-slate-900/60 hover:border-emerald-500/50 hover:bg-slate-900 transition-all text-left group">
+          <div class="flex items-center justify-between mb-2">
+            <i class="fa-solid fa-microchip text-lg text-emerald-400 group-hover:scale-110 transition-transform"></i>
+            <span class="count-badge text-[11px] font-mono px-2 py-0.5 rounded-full bg-slate-800 text-slate-300" id="count-Siemens NX">1</span>
+          </div>
+          <span class="font-mono text-xs font-semibold text-white">Siemens NX</span>
+          <span class="text-[10px] text-slate-400">Die & Tooling</span>
+        </button>
+
+        <!-- ANSYS -->
+        <button onclick="filterFolder('ANSYS')" data-folder="ANSYS" class="folder-tab flex flex-col p-3 rounded-xl border border-slate-800 bg-slate-900/60 hover:border-amber-500/50 hover:bg-slate-900 transition-all text-left group">
+          <div class="flex items-center justify-between mb-2">
+            <i class="fa-solid fa-wave-square text-lg text-amber-400 group-hover:scale-110 transition-transform"></i>
+            <span class="count-badge text-[11px] font-mono px-2 py-0.5 rounded-full bg-slate-800 text-slate-300" id="count-ANSYS">1</span>
+          </div>
+          <span class="font-mono text-xs font-semibold text-white">ANSYS</span>
+          <span class="text-[10px] text-slate-400">FEA & Thermal</span>
+        </button>
+
+        <!-- AutoCAD -->
+        <button onclick="filterFolder('AutoCAD')" data-folder="AutoCAD" class="folder-tab flex flex-col p-3 rounded-xl border border-slate-800 bg-slate-900/60 hover:border-rose-500/50 hover:bg-slate-900 transition-all text-left group">
+          <div class="flex items-center justify-between mb-2">
+            <i class="fa-solid fa-compass-drafting text-lg text-rose-500 group-hover:scale-110 transition-transform"></i>
+            <span class="count-badge text-[11px] font-mono px-2 py-0.5 rounded-full bg-slate-800 text-slate-300" id="count-AutoCAD">2</span>
+          </div>
+          <span class="font-mono text-xs font-semibold text-white">AutoCAD</span>
+          <span class="text-[10px] text-slate-400">2D Drafting</span>
+        </button>
+
+        <!-- Fusion 360 -->
+        <button onclick="filterFolder('Fusion 360')" data-folder="Fusion 360" class="folder-tab flex flex-col p-3 rounded-xl border border-slate-800 bg-slate-900/60 hover:border-orange-500/50 hover:bg-slate-900 transition-all text-left group">
+          <div class="flex items-center justify-between mb-2">
+            <i class="fa-solid fa-gear text-lg text-orange-400 group-hover:scale-110 transition-transform"></i>
+            <span class="count-badge text-[11px] font-mono px-2 py-0.5 rounded-full bg-slate-800 text-slate-300" id="count-Fusion 360">1</span>
+          </div>
+          <span class="font-mono text-xs font-semibold text-white">Fusion 360</span>
+          <span class="text-[10px] text-slate-400">Generative CAD</span>
+        </button>
+      </div>
+
+      <!-- CURRENT FOLDER STATUS BANNER -->
+      <div class="flex items-center justify-between bg-slate-900/40 border border-slate-800 px-4 py-2.5 rounded-lg mb-8 text-xs font-mono">
+        <div class="flex items-center gap-2">
+          <span class="text-slate-400">Active Directory:</span>
+          <span id="active-folder-name" class="text-cyan-400 font-bold">All Design Folders</span>
+        </div>
+        <div class="text-slate-400">
+          Click any card to inspect in <span class="text-cyan-400">3D</span> (or <span class="text-rose-400">2D Blueprint</span> for AutoCAD)
+        </div>
+      </div>
+
+      <!-- DESIGN CARDS GRID -->
+      <div id="designs-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- Dynamically injected via JavaScript -->
+      </div>
+
+    </div>
+  </section>
+
+  <!-- =========================================================
+       4. ABOUT ME SECTION (PROFESSIONAL BACKGROUND & SKILLS)
+       ========================================================= -->
+  <section id="about" class="py-16 md:py-24 border-b border-slate-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+        
+        <!-- Left: Engineering Profile Card -->
+        <div class="lg:col-span-5 space-y-6">
+          <div class="rounded-2xl bg-slate-900/80 border border-slate-800 p-6 md:p-8 relative overflow-hidden">
+            <div class="absolute -right-8 -top-8 w-36 h-36 bg-cyan-500/10 rounded-full blur-2xl"></div>
+
+            <div class="flex items-center gap-4 mb-6">
+              <div class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-cyan-500 to-blue-600 flex items-center justify-center text-2xl text-slate-950 font-bold shadow-[0_0_20px_rgba(0,242,254,0.3)]">
+                <i class="fa-solid fa-drafting-compass"></i>
+              </div>
+              <div>
+                <h3 class="text-xl font-bold text-white">Lead CAD Engineer</h3>
+                <p class="text-sm font-mono text-cyan-400">Mechanical & Precision Design</p>
+                <div class="flex items-center gap-2 mt-1 text-xs text-slate-400">
+                  <span class="w-2 h-2 rounded-full bg-emerald-400"></span> Available for Engineering Projects
+                </div>
+              </div>
+            </div>
+
+            <p class="text-slate-300 text-sm leading-relaxed mb-6">
+              Experienced mechanical design professional with over 6 years of expertise in parametric CAD modeling, surface modeling, kinematic assemblies, and finite element stress analysis. Dedicated to creating production-ready components compliant with ISO 2768, ISO 1101, and ASME Y14.5 standards.
+            </p>
+
+            <div class="space-y-3 font-mono text-xs border-t border-slate-800 pt-5">
+              <div class="flex justify-between py-1.5 border-b border-slate-800/60">
+                <span class="text-slate-400">Specialization:</span>
+                <span class="text-white">DFM, DFA & Precision Tooling</span>
+              </div>
+              <div class="flex justify-between py-1.5 border-b border-slate-800/60">
+                <span class="text-slate-400">Drafting Standards:</span>
+                <span class="text-cyan-400">ASME Y14.5M / ISO 128</span>
+              </div>
+              <div class="flex justify-between py-1.5 border-b border-slate-800/60">
+                <span class="text-slate-400">Simulation:</span>
+                <span class="text-white">Static Structural & Steady Thermal</span>
+              </div>
+              <div class="flex justify-between py-1.5">
+                <span class="text-slate-400">Manufacturing:</span>
+                <span class="text-white">CNC 5-Axis, Injection Molds, 3D Metal</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Software Mastery Bars & Philosophy -->
+        <div class="lg:col-span-7 space-y-8">
+          <div>
+            <div class="text-xs font-mono text-cyan-400 uppercase tracking-widest flex items-center gap-2 mb-2">
+              <i class="fa-solid fa-sliders text-cyan-400"></i> Engineering Software Stack
+            </div>
+            <h2 class="text-3xl font-bold text-white">Engineering Capabilities & Tools</h2>
+            <p class="text-slate-400 text-sm mt-2">
+              Deep operational mastery across standard industry design programs, ranging from surface aerospace modelling in CATIA to 2D shopfloor fabrication drafts in AutoCAD.
+            </p>
+          </div>
+
+          <!-- Software Proficiency Progress Bars -->
+          <div class="space-y-4">
+            
+            <!-- SolidWorks -->
+            <div class="bg-slate-900/60 border border-slate-800 p-3.5 rounded-xl">
+              <div class="flex justify-between text-xs font-mono mb-2">
+                <span class="text-white font-semibold flex items-center gap-2">
+                  <i class="fa-solid fa-shapes text-red-500"></i> SolidWorks
+                </span>
+                <span class="text-cyan-400">95% • Advanced Machine Design</span>
+              </div>
+              <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
+                <div class="bg-gradient-to-r from-red-500 to-cyan-400 h-full rounded-full" style="width: 95%"></div>
+              </div>
+            </div>
+
+            <!-- CATIA V5 -->
+            <div class="bg-slate-900/60 border border-slate-800 p-3.5 rounded-xl">
+              <div class="flex justify-between text-xs font-mono mb-2">
+                <span class="text-white font-semibold flex items-center gap-2">
+                  <i class="fa-solid fa-plane text-blue-400"></i> CATIA V5
+                </span>
+                <span class="text-cyan-400">90% • Generative Shape & Aerospace Surfacing</span>
+              </div>
+              <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
+                <div class="bg-gradient-to-r from-blue-500 to-cyan-400 h-full rounded-full" style="width: 90%"></div>
+              </div>
+            </div>
+
+            <!-- Siemens NX -->
+            <div class="bg-slate-900/60 border border-slate-800 p-3.5 rounded-xl">
+              <div class="flex justify-between text-xs font-mono mb-2">
+                <span class="text-white font-semibold flex items-center gap-2">
+                  <i class="fa-solid fa-microchip text-emerald-400"></i> Siemens NX
+                </span>
+                <span class="text-cyan-400">88% • Mold & Progressive Die Tooling</span>
+              </div>
+              <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
+                <div class="bg-gradient-to-r from-emerald-500 to-cyan-400 h-full rounded-full" style="width: 88%"></div>
+              </div>
+            </div>
+
+            <!-- ANSYS -->
+            <div class="bg-slate-900/60 border border-slate-800 p-3.5 rounded-xl">
+              <div class="flex justify-between text-xs font-mono mb-2">
+                <span class="text-white font-semibold flex items-center gap-2">
+                  <i class="fa-solid fa-wave-square text-amber-400"></i> ANSYS
+                </span>
+                <span class="text-cyan-400">84% • Static Structural, Modal & Thermal FEA</span>
+              </div>
+              <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
+                <div class="bg-gradient-to-r from-amber-500 to-cyan-400 h-full rounded-full" style="width: 84%"></div>
+              </div>
+            </div>
+
+            <!-- AutoCAD -->
+            <div class="bg-slate-900/60 border border-slate-800 p-3.5 rounded-xl">
+              <div class="flex justify-between text-xs font-mono mb-2">
+                <span class="text-white font-semibold flex items-center gap-2">
+                  <i class="fa-solid fa-compass-drafting text-rose-500"></i> AutoCAD
+                </span>
+                <span class="text-cyan-400">96% • 2D Orthographic Blueprints & GD&T Detailing</span>
+              </div>
+              <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
+                <div class="bg-gradient-to-r from-rose-500 to-cyan-400 h-full rounded-full" style="width: 96%"></div>
+              </div>
+            </div>
+
+            <!-- Fusion 360 -->
+            <div class="bg-slate-900/60 border border-slate-800 p-3.5 rounded-xl">
+              <div class="flex justify-between text-xs font-mono mb-2">
+                <span class="text-white font-semibold flex items-center gap-2">
+                  <i class="fa-solid fa-gear text-orange-400"></i> Fusion 360
+                </span>
+                <span class="text-cyan-400">89% • Generative Design & Rapid Prototyping</span>
+              </div>
+              <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
+                <div class="bg-gradient-to-r from-orange-500 to-cyan-400 h-full rounded-full" style="width: 89%"></div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- =========================================================
+       5. FOOTER
+       ========================================================= -->
+  <footer class="bg-slate-950 border-t border-slate-800 py-8 text-center text-xs font-mono text-slate-500">
+    <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center gap-2">
+        <i class="fa-solid fa-cube text-cyan-400"></i>
+        <span class="text-slate-300 font-bold">CAD PORTFOLIO</span>
+        <span>• Engineering Repository</span>
+      </div>
+      <div>
+        Proprietary Mechanical CAD Geometry & 2D Drafting Designs • View Only
+      </div>
+    </div>
+  </footer>
+
+  <!-- =========================================================
+       MODAL 1: 3D ROTATING PART VIEWER
+       ========================================================= -->
+  <div id="viewer-modal" class="fixed inset-0 z-50 hidden bg-slate-950/90 backdrop-blur-md flex items-center justify-center p-2 sm:p-4 md:p-6">
+    <div class="relative w-full max-w-6xl h-[92vh] bg-slate-900 border border-cyan-500/30 rounded-2xl flex flex-col overflow-hidden shadow-[0_0_50px_rgba(0,0,0,0.8)]">
+      
+      <!-- Top Bar -->
+      <div class="flex items-center justify-between px-5 py-3.5 bg-slate-950 border-b border-slate-800">
+        <div class="flex items-center gap-3">
+          <div id="modal-software-badge" class="px-2.5 py-1 rounded text-xs font-mono font-bold bg-cyan-950 text-cyan-400 border border-cyan-500/30">
+            SolidWorks
+          </div>
+          <div>
+            <h3 id="modal-part-title" class="text-sm sm:text-base font-bold text-white font-mono">Mechanical Part</h3>
+            <span class="text-[10px] text-slate-400 font-mono">3D Rotating Part Inspection View</span>
+          </div>
+        </div>
+
+        <!-- Controls & Close Button -->
+        <div class="flex items-center gap-3">
+          <!-- View Only Badge -->
+          <div class="hidden sm:flex items-center gap-1.5 px-3 py-1 bg-slate-900 border border-slate-700 rounded text-slate-300 text-xs font-mono">
+            <i class="fa-solid fa-lock text-cyan-400 text-[10px]"></i> View Only
+          </div>
+
+          <button onclick="closeViewerModal()" class="w-8 h-8 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white flex items-center justify-center transition-colors">
+            <i class="fa-solid fa-xmark text-sm"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Main Viewer Body (Canvas + Specs Sidebar) -->
+      <div class="flex-1 flex flex-col lg:flex-row overflow-hidden relative">
+        
+        <!-- Left: 3D Canvas Area -->
+        <div class="flex-1 h-full relative bg-slate-950 flex flex-col">
+          <div id="three-viewport" class="flex-1 w-full h-full cursor-grab active:cursor-grabbing"></div>
+          
+          <!-- On-Canvas HUD Controls -->
+          <div class="absolute bottom-4 left-4 right-4 flex flex-wrap items-center justify-between gap-2 pointer-events-none">
+            
+            <!-- Shading & Turntable Toggle -->
+            <div class="pointer-events-auto bg-slate-900/90 backdrop-blur border border-slate-800 p-1.5 rounded-xl flex items-center gap-1 shadow-lg">
+              <button onclick="toggleTurntable()" id="turntable-btn" class="px-2.5 py-1.5 rounded-lg text-xs font-mono bg-cyan-500/20 text-cyan-400 border border-cyan-500/40 hover:bg-cyan-500 hover:text-slate-950 transition-all flex items-center gap-1.5">
+                <i class="fa-solid fa-rotate animate-spin text-[10px]" id="spin-icon"></i> Auto-Rotate
+              </button>
+              <button onclick="toggleWireframe()" id="wireframe-btn" class="px-2.5 py-1.5 rounded-lg text-xs font-mono text-slate-400 hover:text-white hover:bg-slate-800 transition-all flex items-center gap-1.5">
+                <i class="fa-solid fa-border-none text-[10px]"></i> Wireframe
+              </button>
+              <button onclick="resetCamera()" class="px-2.5 py-1.5 rounded-lg text-xs font-mono text-slate-400 hover:text-white hover:bg-slate-800 transition-all flex items-center gap-1.5">
+                <i class="fa-solid fa-arrows-to-dot text-[10px]"></i> Reset View
+              </button>
+            </div>
+
+            <!-- Material Finish Switcher -->
+            <div class="pointer-events-auto bg-slate-900/90 backdrop-blur border border-slate-800 p-1.5 rounded-xl flex items-center gap-1 shadow-lg text-xs font-mono">
+              <span class="text-slate-400 text-[10px] px-1 hidden sm:inline">Finish:</span>
+              <button onclick="setMaterialFinish('steel')" class="px-2 py-1 rounded bg-slate-800 text-slate-300 hover:text-cyan-400 text-[11px]">Steel</button>
+              <button onclick="setMaterialFinish('brass')" class="px-2 py-1 rounded bg-slate-800 text-slate-300 hover:text-amber-400 text-[11px]">Brass</button>
+              <button onclick="setMaterialFinish('cyan')" class="px-2 py-1 rounded bg-slate-800 text-slate-300 hover:text-cyan-300 text-[11px]">Anodized</button>
+            </div>
+
+          </div>
+
+          <!-- Interaction helper hint -->
+          <div class="absolute top-3 left-3 text-[10px] font-mono text-slate-400 bg-slate-900/80 px-2.5 py-1 rounded border border-slate-800 pointer-events-none flex items-center gap-2">
+            <span><i class="fa-solid fa-computer-mouse text-cyan-400"></i> Left-Click: Rotate</span>
+            <span>•</span>
+            <span>Right-Click: Pan</span>
+            <span>•</span>
+            <span>Scroll: Zoom</span>
+          </div>
+        </div>
+
+        <!-- Right: Technical Engineering Specs Sidebar -->
+        <div class="w-full lg:w-80 bg-slate-900/95 border-t lg:border-t-0 lg:border-l border-slate-800 p-5 flex flex-col justify-between overflow-y-auto">
+          <div class="space-y-4">
+            <div>
+              <span class="text-[10px] font-mono uppercase tracking-wider text-slate-400">Engineering Specification</span>
+              <h4 class="text-sm font-bold text-white mt-0.5">Part Characteristics</h4>
+            </div>
+
+            <!-- Spec items -->
+            <div class="space-y-2.5 font-mono text-xs">
+              <div class="p-2.5 rounded bg-slate-950/60 border border-slate-800/80">
+                <div class="text-[10px] text-slate-400">Software Environment</div>
+                <div id="modal-spec-software" class="text-white font-medium mt-0.5">SolidWorks</div>
+              </div>
+
+              <div class="p-2.5 rounded bg-slate-950/60 border border-slate-800/80">
+                <div class="text-[10px] text-slate-400">Design Intent & Tolerances</div>
+                <div id="modal-spec-tolerances" class="text-cyan-400 font-medium mt-0.5">ISO 2768-mK / ±0.015 mm</div>
+              </div>
+
+              <div class="p-2.5 rounded bg-slate-950/60 border border-slate-800/80">
+                <div class="text-[10px] text-slate-400">Material Specification</div>
+                <div id="modal-spec-material" class="text-white font-medium mt-0.5">AISI 4140 Alloy Steel (Quenched & Tempered)</div>
+              </div>
+
+              <div class="p-2.5 rounded bg-slate-950/60 border border-slate-800/80">
+                <div class="text-[10px] text-slate-400">Manufacturing Process</div>
+                <div id="modal-spec-process" class="text-white font-medium mt-0.5">CNC 5-Axis Turning & Wire EDM</div>
+              </div>
+
+              <div class="p-2.5 rounded bg-slate-950/60 border border-slate-800/80">
+                <div class="text-[10px] text-slate-400">GD&T Feature Control</div>
+                <div id="modal-spec-gdt" class="text-amber-400 font-medium mt-0.5">⌖ 0.02 Ⓜ | A | B | C</div>
+              </div>
+            </div>
+
+            <!-- Description -->
+            <div class="pt-2">
+              <div class="text-[10px] font-mono text-slate-400 uppercase tracking-wider mb-1">Functional Summary</div>
+              <p id="modal-spec-desc" class="text-xs text-slate-300 leading-relaxed font-sans">
+                High-stress mechanical assembly modeled with parametric clearance fits.
+              </p>
+            </div>
+          </div>
+
+          <!-- View-only security notice -->
+          <div class="mt-6 pt-4 border-t border-slate-800">
+            <div class="bg-cyan-950/30 border border-cyan-500/20 p-2.5 rounded-lg flex items-center gap-2 text-[11px] font-mono text-cyan-400">
+              <i class="fa-solid fa-shield-halved text-xs"></i>
+              <span>VIEW-ONLY CAD ASSET • Proprietary Geometry</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+  <!-- =========================================================
+       MODAL 2: 2D AUTOCAD BLUEPRINT DRAFTING VIEWER
+       ========================================================= -->
+  <div id="blueprint-modal" class="fixed inset-0 z-50 hidden bg-slate-950/95 backdrop-blur-md flex items-center justify-center p-2 sm:p-4 md:p-6">
+    <div class="relative w-full max-w-6xl h-[92vh] bg-slate-900 border border-rose-500/30 rounded-2xl flex flex-col overflow-hidden shadow-[0_0_50px_rgba(0,0,0,0.8)]">
+      
+      <!-- Top Bar -->
+      <div class="flex items-center justify-between px-5 py-3.5 bg-slate-950 border-b border-slate-800">
+        <div class="flex items-center gap-3">
+          <div class="px-2.5 py-1 rounded text-xs font-mono font-bold bg-rose-950 text-rose-400 border border-rose-500/30">
+            AutoCAD
+          </div>
+          <div>
+            <h3 id="bp-title" class="text-sm sm:text-base font-bold text-white font-mono">2D Technical Blueprint</h3>
+            <span class="text-[10px] text-rose-400 font-mono">2D Drafting Detailing & Sectional Projections</span>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-3">
+          <div class="hidden sm:flex items-center gap-1.5 px-3 py-1 bg-slate-900 border border-slate-700 rounded text-slate-300 text-xs font-mono">
+            <i class="fa-solid fa-lock text-rose-400 text-[10px]"></i> View Only
+          </div>
+          <button onclick="closeBlueprintModal()" class="w-8 h-8 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white flex items-center justify-center transition-colors">
+            <i class="fa-solid fa-xmark text-sm"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Main Blueprint Viewer Area -->
+      <div class="flex-1 flex flex-col lg:flex-row overflow-hidden relative">
+        
+        <!-- Interactive 2D Drawing Canvas Area -->
+        <div class="flex-1 blueprint-paper p-4 overflow-auto flex items-center justify-center relative">
+          
+          <div id="blueprint-drawing-container" class="w-full max-w-3xl border-2 border-cyan-400/80 p-6 bg-[#001830] text-cyan-300 font-mono relative shadow-2xl rounded-sm">
+            <!-- Dynamically populated 2D Blueprint SVG Drawing -->
+          </div>
+
+        </div>
+
+        <!-- 2D Drawing Sheet Sidebar -->
+        <div class="w-full lg:w-80 bg-slate-900/95 border-t lg:border-t-0 lg:border-l border-slate-800 p-5 flex flex-col justify-between overflow-y-auto">
+          <div class="space-y-4">
+            <div>
+              <span class="text-[10px] font-mono uppercase tracking-wider text-rose-400">2D Detailing Specifications</span>
+              <h4 class="text-sm font-bold text-white mt-0.5">Drawing Information</h4>
+            </div>
+
+            <div class="space-y-2.5 font-mono text-xs">
+              <div class="p-2.5 rounded bg-slate-950/60 border border-slate-800/80">
+                <div class="text-[10px] text-slate-400">Software Environment</div>
+                <div class="text-rose-400 font-semibold mt-0.5">AutoCAD</div>
+              </div>
+              <div class="p-2.5 rounded bg-slate-950/60 border border-slate-800/80">
+                <div class="text-[10px] text-slate-400">Drafting Standard</div>
+                <div id="bp-spec-standard" class="text-white font-medium mt-0.5">ISO 128 / ASME Y14.5M</div>
+              </div>
+              <div class="p-2.5 rounded bg-slate-950/60 border border-slate-800/80">
+                <div class="text-[10px] text-slate-400">Sheet Size & Projection</div>
+                <div class="text-white font-medium mt-0.5">A2 Landscape (1st Angle Projection)</div>
+              </div>
+              <div class="p-2.5 rounded bg-slate-950/60 border border-slate-800/80">
+                <div class="text-[10px] text-slate-400">Scale & Surface Finish</div>
+                <div class="text-cyan-400 font-medium mt-0.5">Scale 1:1 • Ra 0.8 µm</div>
+              </div>
+            </div>
+
+            <div class="pt-2">
+              <div class="text-[10px] font-mono text-slate-400 uppercase tracking-wider mb-1">Drafting Notes</div>
+              <p id="bp-desc" class="text-xs text-slate-300 leading-relaxed font-sans">
+                All dimensions in millimeters unless otherwise specified. Deburr all sharp edges 0.2 × 45°. Concentricity within 0.015 relative to Datum A.
+              </p>
+            </div>
+          </div>
+
+          <div class="mt-6 pt-4 border-t border-slate-800">
+            <div class="bg-rose-950/30 border border-rose-500/20 p-2.5 rounded-lg flex items-center gap-2 text-[11px] font-mono text-rose-400">
+              <i class="fa-solid fa-shield-halved text-xs"></i>
+              <span>VIEW-ONLY BLUEPRINT • Protected 2D DWG Sheet</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+  <!-- =========================================================
+       MODAL 3: ADD DESIGN MODAL
+       ========================================================= -->
+  <div id="upload-modal" class="fixed inset-0 z-50 hidden bg-slate-950/90 backdrop-blur-md flex items-center justify-center p-3 sm:p-6 overflow-y-auto">
+    <div class="relative w-full max-w-2xl bg-slate-900 border border-cyan-500/40 rounded-2xl overflow-hidden shadow-[0_0_50px_rgba(0,242,254,0.2)] my-auto">
+      
+      <!-- Modal Header -->
+      <div class="flex items-center justify-between px-6 py-4 bg-slate-950 border-b border-slate-800">
+        <div class="flex items-center gap-2.5">
+          <div class="w-8 h-8 rounded-lg bg-cyan-500/20 border border-cyan-500/30 flex items-center justify-center text-cyan-400">
+            <i class="fa-solid fa-plus text-sm"></i>
+          </div>
+          <div>
+            <h3 class="font-mono text-base font-bold text-white">Add Design</h3>
+            <p class="text-[11px] text-slate-400">Add 3D CAD or AutoCAD 2D Drafting design to your portfolio</p>
+          </div>
+        </div>
+        <button onclick="closeUploadModal()" class="w-8 h-8 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white flex items-center justify-center transition-colors">
+          <i class="fa-solid fa-xmark text-sm"></i>
+        </button>
+      </div>
+
+      <!-- Add Design Form -->
+      <form id="add-design-form" onsubmit="handleDesignUpload(event)" class="p-6 space-y-4">
+        
+        <!-- Design Title -->
+        <div>
+          <label class="block text-xs font-mono text-slate-300 mb-1.5 font-medium">Design Title *</label>
+          <input type="text" id="upload-title" required placeholder="e.g., Planetary Reduction Gearbox Assembly" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3.5 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400 transition-colors">
+        </div>
+
+        <!-- Software Selection Dropdown -->
+        <div>
+          <label class="block text-xs font-mono text-slate-300 mb-1.5 font-medium">Software *</label>
+          <select id="upload-folder" required onchange="handleSoftwareSelectChange()" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-cyan-400 transition-colors">
+            <option value="SolidWorks">SolidWorks</option>
+            <option value="CATIA V5">CATIA V5</option>
+            <option value="Siemens NX">Siemens NX</option>
+            <option value="ANSYS">ANSYS</option>
+            <option value="AutoCAD">AutoCAD</option>
+            <option value="Fusion 360">Fusion 360</option>
+          </select>
+          <p id="software-mode-indicator" class="text-[11px] font-mono text-cyan-400 mt-1">Mode: 3D CAD Inspection Part</p>
+        </div>
+
+        <!-- File Upload Area -->
+        <div>
+          <label class="block text-xs font-mono text-slate-300 mb-1.5 font-medium">
+            Attach Model / Drawing File <span class="text-slate-500 font-normal">(Optional .stl or blueprint file)</span>
+          </label>
+          <div id="drop-zone" class="border-2 border-dashed border-slate-700 hover:border-cyan-400/60 rounded-xl p-5 text-center cursor-pointer transition-colors bg-slate-950/40 relative">
+            <input type="file" id="upload-file-input" accept=".stl,.obj,.dwg,.dxf,.svg,.png,.jpg" class="absolute inset-0 opacity-0 cursor-pointer" onchange="handleFileSelect(this)">
+            <i class="fa-solid fa-cloud-arrow-up text-2xl text-cyan-400/80 mb-2"></i>
+            <p class="text-xs text-slate-300 font-mono" id="file-label">Drop file here or <span class="text-cyan-400 underline">browse</span></p>
+            <p class="text-[10px] text-slate-500 mt-1">If no custom file is attached, an engineered geometric template is rendered.</p>
+          </div>
+          <div id="attached-file-badge" class="hidden mt-2 flex items-center justify-between bg-slate-950 px-3 py-1.5 rounded border border-cyan-500/30 text-xs font-mono text-cyan-400">
+            <span id="attached-file-name" class="truncate">filename.stl</span>
+            <button type="button" onclick="clearAttachedFile()" class="text-slate-400 hover:text-red-400"><i class="fa-solid fa-xmark"></i></button>
+          </div>
+        </div>
+
+        <!-- Engineering Specifications Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-mono text-slate-300 mb-1.5 font-medium">Material Specification</label>
+            <input type="text" id="upload-material" placeholder="e.g., Al 7075-T6 / Ti-6Al-4V" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3.5 py-2 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400">
+          </div>
+          <div>
+            <label class="block text-xs font-mono text-slate-300 mb-1.5 font-medium">Tolerances & Standard</label>
+            <input type="text" id="upload-tolerances" placeholder="e.g., ISO 2768-mK / ±0.02 mm" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3.5 py-2 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-mono text-slate-300 mb-1.5 font-medium">Manufacturing Process</label>
+            <input type="text" id="upload-process" placeholder="e.g., 5-Axis CNC Milling & Anodizing" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3.5 py-2 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400">
+          </div>
+          <div>
+            <label class="block text-xs font-mono text-slate-300 mb-1.5 font-medium">GD&T Feature Control</label>
+            <input type="text" id="upload-gdt" placeholder="e.g., ⌖ 0.02 Ⓜ | A | B" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3.5 py-2 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400">
+          </div>
+        </div>
+
+        <!-- Description -->
+        <div>
+          <label class="block text-xs font-mono text-slate-300 mb-1.5 font-medium">Design Summary & Intent</label>
+          <textarea id="upload-desc" rows="2" placeholder="Brief technical summary of this component's function and kinematic constraints..." class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3.5 py-2 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400"></textarea>
+        </div>
+
+        <!-- Footer Buttons -->
+        <div class="pt-3 border-t border-slate-800 flex items-center justify-end gap-3">
+          <button type="button" onclick="closeUploadModal()" class="px-4 py-2 rounded-lg text-xs font-mono text-slate-400 hover:text-white hover:bg-slate-800 transition-colors">
+            Cancel
+          </button>
+          <button type="submit" class="px-5 py-2 rounded-lg bg-gradient-to-r from-cyan-500 to-blue-600 text-slate-950 font-mono font-bold text-xs uppercase tracking-wide hover:shadow-[0_0_20px_rgba(0,242,254,0.5)] transition-all">
+            <i class="fa-solid fa-check mr-1.5"></i> Save & Add to Portfolio
+          </button>
+        </div>
+
+      </form>
+    </div>
+  </div>
+
+  <!-- Toast Message Box -->
+  <div id="toast" class="fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 transition-all duration-300 bg-slate-900 border border-cyan-500 px-4 py-3 rounded-xl shadow-2xl text-xs font-mono flex items-center gap-3">
+    <i class="fa-solid fa-circle-check text-cyan-400 text-base" id="toast-icon"></i>
+    <span id="toast-message" class="text-white">Action completed successfully</span>
+  </div>
+
+  <!-- =========================================================
+       JAVASCRIPT: 3D CAD ENGINE, 2D DRAFTING & DATA MANAGEMENT
+       ========================================================= -->
+  <script>
+    /* ==========================================================
+       1. DATA STORE: DEFAULT CAD & 2D DRAFTING PROJECTS
+       ========================================================== */
+    const DEFAULT_PROJECTS = [
+      {
+        id: "sw-1",
+        title: "Helical Planetary Sun Gear & Carrier",
+        folder: "SolidWorks",
+        type: "3d",
+        presetShape: "helical_gear",
+        material: "AISI 4340 Alloy Steel, Case Hardened (58-62 HRC)",
+        tolerances: "ISO 2768-fH / Runout < 0.008 mm",
+        process: "Hobbing, Gas Carburizing & Gear Grinding",
+        gdt: "◎ 0.008 | A | B",
+        description: "High-torque reduction gear for robotic joint actuation with 20° helix angle and optimized tooth profile for low backlash.",
+        isDefault: true
+      },
+      {
+        id: "sw-2",
+        title: "Precision Flanged Drive Spindle",
+        folder: "SolidWorks",
+        type: "3d",
+        presetShape: "spindle",
+        material: "Stainless Steel 17-4 PH (H900 Condition)",
+        tolerances: "DIN 7168-m / Diametric H7/g6 fit",
+        process: "CNC Turning, Induction Hardening & Cylindrical Grind",
+        gdt: "↗ 0.005 | A",
+        description: "High-speed CNC machining spindle with integrated ceramic angular contact bearing seats and dynamic runout below 2 microns.",
+        isDefault: true
+      },
+      {
+        id: "catia-1",
+        title: "High-Pressure Centrifugal Impeller",
+        folder: "CATIA V5",
+        type: "3d",
+        presetShape: "impeller",
+        material: "Titanium Ti-6Al-4V (Grade 5)",
+        tolerances: "Blade Profile ±0.025 mm / ISO 1302 Ra 0.4",
+        process: "5-Axis Simultaneous CNC Machining & Shot Peening",
+        gdt: "⌯ 0.012 | A | B",
+        description: "Aerodynamic closed centrifugal compressor impeller with backward-curved splitter blades for high pressure ratios.",
+        isDefault: true
+      },
+      {
+        id: "nx-1",
+        title: "Progressive Die Stripper & Punch Guide",
+        folder: "Siemens NX",
+        type: "3d",
+        presetShape: "bearing_block",
+        material: "D2 Tool Steel (Vacuum Heat Treated 60 HRC)",
+        tolerances: "Wire EDM Clearance 0.005 mm per side",
+        process: "Wire EDM, Surface Grinding & Cryogenic Treatment",
+        gdt: "⌖ 0.005 Ⓜ | D | E",
+        description: "Multi-stage stamping tool punch guide with sub-micron guide bushing bores and integrated nitrogen gas spring pockets.",
+        isDefault: true
+      },
+      {
+        id: "ansys-1",
+        title: "Topology Optimized Aerospace Suspension Bracket",
+        folder: "ANSYS",
+        type: "3d",
+        presetShape: "suspension_bracket",
+        material: "AlSi10Mg Additive Aluminum Alloy",
+        tolerances: "Net Shape DMLS ±0.1 mm / Machined Bores ±0.01 mm",
+        process: "Direct Metal Laser Sintering (DMLS) + CNC Finishing",
+        gdt: "⏤ 0.015 | Datum A",
+        description: "Finite element mass-reduction study resulting in a 42% lighter bracket capable of withstanding 24 kN combined tensile-shear load.",
+        isDefault: true
+      },
+      {
+        id: "acad-1",
+        title: "High-Pressure Hydraulic Valve Body 2D Detail",
+        folder: "AutoCAD",
+        type: "2d",
+        blueprintPreset: "hydraulic_valve",
+        material: "Ductile Iron GGG-40 / EN-GJS-400-15",
+        tolerances: "ISO 2768-mK / O-ring Grooves ISO 3601",
+        process: "Sand Casting & Precision Horizontal Machining Center",
+        gdt: "⌖ 0.015 | A | B | C",
+        description: "2D orthographic shopfloor fabrication drawing with full section views, internal spool port dimensioning, and ISO GD&T symbols.",
+        isDefault: true
+      },
+      {
+        id: "acad-2",
+        title: "Heavy-Duty Flanged Coupling Section & Bore Tolerances",
+        folder: "AutoCAD",
+        type: "2d",
+        blueprintPreset: "flange_coupling",
+        material: "Carbon Steel C45 (Normalized)",
+        tolerances: "Bore Fit H7/k6 / Keyway DIN 6885/1",
+        process: "Forging, Turning, Broaching & Phosphating",
+        gdt: "⌖ 0.020 | A",
+        description: "Complete 2D manufacturing detail sheet showing sectional elevations, bolt hole pitch circles, surface finishes, and tolerance stack-ups.",
+        isDefault: true
+      },
+      {
+        id: "fusion-1",
+        title: "Generative Robotic Gripper End-Effector",
+        folder: "Fusion 360",
+        type: "3d",
+        presetShape: "gripper",
+        material: "Carbon-Fiber Reinforced PA12 Nylon",
+        tolerances: "ISO 20457 / Pin centers ±0.03 mm",
+        process: "Selective Laser Sintering (SLS) & Reamed Pin Bores",
+        gdt: "⌯ 0.025 | A",
+        description: "Lightweight generative industrial end-effector designed for automated high-speed pick-and-place with internal pneumatic routing channels.",
+        isDefault: true
+      }
+    ];
+
+    let projects = [];
+    let currentFolderFilter = "All";
+    let active3DProject = null;
+
+    /* Initialize from LocalStorage or Defaults */
+    function initData() {
+      const stored = localStorage.getItem('cad_portfolio_designs');
+      if (stored) {
+        try {
+          projects = JSON.parse(stored);
+        } catch(e) {
+          projects = [...DEFAULT_PROJECTS];
+        }
+      } else {
+        projects = [...DEFAULT_PROJECTS];
+        saveData();
+      }
+      renderCards();
+      updateFolderCounters();
+    }
+
+    function saveData() {
+      localStorage.setItem('cad_portfolio_designs', JSON.stringify(projects));
+    }
+
+    /* ==========================================================
+       2. THREE.JS 3D CAD ENGINE (HERO & MODAL)
+       ========================================================= */
+    let heroScene, heroCamera, heroRenderer, heroMesh;
+    let modalScene, modalCamera, modalRenderer, modalMeshGroup, modalControls;
+    let isAutoRotating = true;
+    let isWireframe = false;
+    let currentFinish = 'steel';
+
+    // Geometry generators for industrial mechanical parts
+    function createMechanicalGeometry(shapeType) {
+      const group = new THREE.Group();
+
+      if (shapeType === 'helical_gear') {
+        const bodyGeo = new THREE.CylinderGeometry(2.4, 2.4, 1.2, 48);
+        const boreGeo = new THREE.CylinderGeometry(0.8, 0.8, 1.25, 32);
+        const rimGeo = new THREE.TorusGeometry(2.1, 0.25, 16, 48);
+        rimGeo.rotateX(Math.PI / 2);
+
+        const body = new THREE.Mesh(bodyGeo, getMaterial(currentFinish));
+        const rim = new THREE.Mesh(rimGeo, getMaterial(currentFinish));
+        group.add(body);
+        group.add(rim);
+
+        // Gear Teeth
+        const toothCount = 20;
+        for (let i = 0; i < toothCount; i++) {
+          const angle = (i / toothCount) * Math.PI * 2;
+          const toothGeo = new THREE.BoxGeometry(0.35, 1.2, 0.65);
+          const tooth = new THREE.Mesh(toothGeo, getMaterial(currentFinish));
+          tooth.position.set(Math.cos(angle) * 2.5, 0, Math.sin(angle) * 2.5);
+          tooth.rotation.y = -angle + 0.35; // Helical tilt
+          group.add(tooth);
+        }
+
+        // Keyway Shaft
+        const shaftGeo = new THREE.CylinderGeometry(0.7, 0.7, 2.2, 32);
+        const shaft = new THREE.Mesh(shaftGeo, getMaterial('brass'));
+        group.add(shaft);
+
+      } else if (shapeType === 'spindle') {
+        const seg1 = new THREE.Mesh(new THREE.CylinderGeometry(1.0, 1.0, 4.0, 36), getMaterial(currentFinish));
+        const flange = new THREE.Mesh(new THREE.CylinderGeometry(2.2, 2.2, 0.5, 36), getMaterial(currentFinish));
+        flange.position.y = 0.8;
+        const nose = new THREE.Mesh(new THREE.CylinderGeometry(0.7, 1.0, 1.2, 36), getMaterial(currentFinish));
+        nose.position.y = 2.4;
+        const thread = new THREE.Mesh(new THREE.CylinderGeometry(0.6, 0.6, 1.0, 36), getMaterial('brass'));
+        thread.position.y = -2.3;
+
+        group.add(seg1);
+        group.add(flange);
+        group.add(nose);
+        group.add(thread);
+
+        // Flange Bolt Holes
+        for (let i = 0; i < 6; i++) {
+          const ang = (i / 6) * Math.PI * 2;
+          const bolt = new THREE.Mesh(new THREE.CylinderGeometry(0.18, 0.18, 0.6, 16), getMaterial('cyan'));
+          bolt.position.set(Math.cos(ang) * 1.6, 0.8, Math.sin(ang) * 1.6);
+          group.add(bolt);
+        }
+
+      } else if (shapeType === 'impeller') {
+        const hub = new THREE.Mesh(new THREE.CylinderGeometry(0.5, 2.0, 1.8, 36), getMaterial(currentFinish));
+        group.add(hub);
+
+        const bladeCount = 9;
+        for (let i = 0; i < bladeCount; i++) {
+          const ang = (i / bladeCount) * Math.PI * 2;
+          const bladeGeo = new THREE.BoxGeometry(0.12, 1.4, 1.8);
+          const blade = new THREE.Mesh(bladeGeo, getMaterial(currentFinish));
+          blade.position.set(Math.cos(ang) * 1.3, 0.2, Math.sin(ang) * 1.3);
+          blade.rotation.y = -ang + 0.8;
+          blade.rotation.z = 0.3;
+          group.add(blade);
+        }
+
+      } else if (shapeType === 'bearing_block') {
+        const block = new THREE.Mesh(new THREE.BoxGeometry(3.6, 2.6, 1.4), getMaterial(currentFinish));
+        const bore = new THREE.Mesh(new THREE.CylinderGeometry(1.0, 1.0, 1.5, 32), getMaterial('brass'));
+        bore.rotation.x = Math.PI / 2;
+        group.add(block);
+        group.add(bore);
+
+        // Dowel holes
+        const p1 = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.2, 1.5, 16), getMaterial('cyan'));
+        p1.rotation.x = Math.PI / 2;
+        p1.position.set(1.3, 0.8, 0);
+        const p2 = p1.clone();
+        p2.position.set(-1.3, -0.8, 0);
+        group.add(p1);
+        group.add(p2);
+
+      } else if (shapeType === 'suspension_bracket') {
+        const main = new THREE.Mesh(new THREE.BoxGeometry(1.6, 3.4, 0.8), getMaterial(currentFinish));
+        const ringTop = new THREE.Mesh(new THREE.TorusGeometry(0.9, 0.35, 16, 36), getMaterial(currentFinish));
+        ringTop.position.y = 1.6;
+        const ringBot = new THREE.Mesh(new THREE.TorusGeometry(0.7, 0.3, 16, 36), getMaterial(currentFinish));
+        ringBot.position.y = -1.6;
+
+        // Topology web strut
+        const web = new THREE.Mesh(new THREE.CylinderGeometry(0.25, 0.25, 3.0, 16), getMaterial('cyan'));
+        web.rotation.z = 0.5;
+
+        group.add(main);
+        group.add(ringTop);
+        group.add(ringBot);
+        group.add(web);
+
+      } else if (shapeType === 'gripper') {
+        const base = new THREE.Mesh(new THREE.CylinderGeometry(1.2, 1.4, 0.8, 24), getMaterial(currentFinish));
+        const finger1 = new THREE.Mesh(new THREE.BoxGeometry(0.4, 2.2, 0.5), getMaterial(currentFinish));
+        finger1.position.set(0.9, 1.2, 0);
+        finger1.rotation.z = -0.15;
+        const finger2 = new THREE.Mesh(new THREE.BoxGeometry(0.4, 2.2, 0.5), getMaterial(currentFinish));
+        finger2.position.set(-0.9, 1.2, 0);
+        finger2.rotation.z = 0.15;
+
+        const tip1 = new THREE.Mesh(new THREE.BoxGeometry(0.4, 0.3, 0.6), getMaterial('cyan'));
+        tip1.position.set(0.7, 2.3, 0);
+        const tip2 = tip1.clone();
+        tip2.position.set(-0.7, 2.3, 0);
+
+        group.add(base);
+        group.add(finger1);
+        group.add(finger2);
+        group.add(tip1);
+        group.add(tip2);
+
+      } else {
+        // Fallback default mechanical coupling
+        const c1 = new THREE.Mesh(new THREE.CylinderGeometry(1.8, 1.8, 0.8, 36), getMaterial(currentFinish));
+        const c2 = new THREE.Mesh(new THREE.CylinderGeometry(1.1, 1.1, 2.2, 36), getMaterial(currentFinish));
+        group.add(c1);
+        group.add(c2);
+      }
+
+      return group;
+    }
+
+    function getMaterial(finish) {
+      if (finish === 'brass') {
+        return new THREE.MeshStandardMaterial({
+          color: 0xd4af37,
+          metalness: 0.85,
+          roughness: 0.25,
+          wireframe: isWireframe
+        });
+      } else if (finish === 'cyan') {
+        return new THREE.MeshStandardMaterial({
+          color: 0x00f2fe,
+          metalness: 0.9,
+          roughness: 0.2,
+          wireframe: isWireframe
+        });
+      } else {
+        // Hardened Steel
+        return new THREE.MeshStandardMaterial({
+          color: 0x94a3b8,
+          metalness: 0.92,
+          roughness: 0.28,
+          wireframe: isWireframe
+        });
+      }
+    }
+
+    /* Initialize Hero 3D Viewport */
+    function initHero3D() {
+      const container = document.getElementById('hero-3d-canvas-container');
+      if (!container) return;
+
+      heroScene = new THREE.Scene();
+      heroCamera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 100);
+      heroCamera.position.set(4, 3, 5);
+
+      heroRenderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+      heroRenderer.setSize(container.clientWidth, container.clientHeight);
+      heroRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      container.appendChild(heroRenderer.domElement);
+
+      // Lighting
+      const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
+      heroScene.add(ambientLight);
+
+      const dirLight1 = new THREE.DirectionalLight(0x00f2fe, 1.8);
+      dirLight1.position.set(5, 10, 7);
+      heroScene.add(dirLight1);
+
+      const dirLight2 = new THREE.DirectionalLight(0x3b82f6, 1.2);
+      dirLight2.position.set(-5, -5, -5);
+      heroScene.add(dirLight2);
+
+      // Model
+      heroMesh = createMechanicalGeometry('helical_gear');
+      heroScene.add(heroMesh);
+
+      // Orbit controls for interactive rotating in hero
+      const controls = new THREE.OrbitControls(heroCamera, heroRenderer.domElement);
+      controls.enableDamping = true;
+      controls.dampingFactor = 0.05;
+      controls.autoRotate = true;
+      controls.autoRotateSpeed = 2.0;
+
+      function animate() {
+        requestAnimationFrame(animate);
+        controls.update();
+        heroRenderer.render(heroScene, heroCamera);
+      }
+      animate();
+
+      window.addEventListener('resize', () => {
+        if (!container) return;
+        heroCamera.aspect = container.clientWidth / container.clientHeight;
+        heroCamera.updateProjectionMatrix();
+        heroRenderer.setSize(container.clientWidth, container.clientHeight);
+      });
+    }
+
+    /* Initialize Modal 3D Viewport */
+    function initModal3D() {
+      const container = document.getElementById('three-viewport');
+      if (!container) return;
+
+      modalScene = new THREE.Scene();
+      modalScene.background = new THREE.Color(0x090d16);
+
+      // Engineering grid helper
+      const gridHelper = new THREE.GridHelper(10, 20, 0x00f2fe, 0x1e293b);
+      gridHelper.position.y = -1.8;
+      modalScene.add(gridHelper);
+
+      modalCamera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 100);
+      modalCamera.position.set(4.5, 3.5, 5.5);
+
+      modalRenderer = new THREE.WebGLRenderer({ antialias: true });
+      modalRenderer.setSize(container.clientWidth, container.clientHeight);
+      modalRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      container.appendChild(modalRenderer.domElement);
+
+      modalControls = new THREE.OrbitControls(modalCamera, modalRenderer.domElement);
+      modalControls.enableDamping = true;
+      modalControls.dampingFactor = 0.06;
+
+      // Lighting Setup
+      const ambLight = new THREE.AmbientLight(0xffffff, 0.8);
+      modalScene.add(ambLight);
+
+      const keyLight = new THREE.DirectionalLight(0xffffff, 1.5);
+      keyLight.position.set(6, 12, 8);
+      modalScene.add(keyLight);
+
+      const rimLight = new THREE.DirectionalLight(0x00f2fe, 1.2);
+      rimLight.position.set(-8, 5, -8);
+      modalScene.add(rimLight);
+
+      const fillLight = new THREE.DirectionalLight(0x38bdf8, 0.7);
+      fillLight.position.set(0, -6, 5);
+      modalScene.add(fillLight);
+
+      function animate() {
+        requestAnimationFrame(animate);
+        if (isAutoRotating && modalMeshGroup) {
+          modalMeshGroup.rotation.y += 0.008;
+        }
+        modalControls.update();
+        modalRenderer.render(modalScene, modalCamera);
+      }
+      animate();
+
+      window.addEventListener('resize', onModalResize);
+    }
+
+    function onModalResize() {
+      const container = document.getElementById('three-viewport');
+      if (!container || !modalRenderer) return;
+      modalCamera.aspect = container.clientWidth / container.clientHeight;
+      modalCamera.updateProjectionMatrix();
+      modalRenderer.setSize(container.clientWidth, container.clientHeight);
+    }
+
+    function loadModelIntoModal(project) {
+      if (!modalScene) initModal3D();
+
+      // Remove existing mesh
+      if (modalMeshGroup) {
+        modalScene.remove(modalMeshGroup);
+      }
+
+      // Check if user uploaded a custom STL
+      if (project.customSTLData) {
+        try {
+          const loader = new THREE.STLLoader();
+          const geometry = loader.parse(project.customSTLData);
+          geometry.center();
+          geometry.computeVertexNormals();
+
+          const mat = getMaterial(currentFinish);
+          const mesh = new THREE.Mesh(geometry, mat);
+          modalMeshGroup = new THREE.Group();
+          modalMeshGroup.add(mesh);
+          modalScene.add(modalMeshGroup);
+          resetCamera();
+          return;
+        } catch (e) {
+          console.warn("Could not parse STL, falling back to procedural preset", e);
+        }
+      }
+
+      // Procedural mechanical geometry
+      modalMeshGroup = createMechanicalGeometry(project.presetShape || 'helical_gear');
+      modalScene.add(modalMeshGroup);
+      resetCamera();
+    }
+
+    /* 3D Controls Actions */
+    function toggleTurntable() {
+      isAutoRotating = !isAutoRotating;
+      const spinIcon = document.getElementById('spin-icon');
+      const btn = document.getElementById('turntable-btn');
+      if (isAutoRotating) {
+        spinIcon.classList.add('animate-spin');
+        btn.classList.add('text-cyan-400', 'bg-cyan-500/20', 'border-cyan-500/40');
+      } else {
+        spinIcon.classList.remove('animate-spin');
+        btn.classList.remove('text-cyan-400', 'bg-cyan-500/20', 'border-cyan-500/40');
+      }
+    }
+
+    function toggleWireframe() {
+      isWireframe = !isWireframe;
+      const btn = document.getElementById('wireframe-btn');
+      if (isWireframe) {
+        btn.classList.add('text-cyan-400', 'bg-cyan-500/20');
+      } else {
+        btn.classList.remove('text-cyan-400', 'bg-cyan-500/20');
+      }
+
+      if (modalMeshGroup) {
+        modalMeshGroup.traverse((child) => {
+          if (child.isMesh) {
+            child.material.wireframe = isWireframe;
+          }
+        });
+      }
+    }
+
+    function resetCamera() {
+      if (modalCamera && modalControls) {
+        modalCamera.position.set(4.5, 3.5, 5.5);
+        modalControls.target.set(0, 0, 0);
+        modalControls.update();
+      }
+    }
+
+    function setMaterialFinish(finish) {
+      currentFinish = finish;
+      if (!modalMeshGroup) return;
+
+      modalMeshGroup.traverse((child) => {
+        if (child.isMesh) {
+          child.material = getMaterial(finish);
+        }
+      });
+    }
+
+    /* ==========================================================
+       3. AUTOCAD 2D TECHNICAL BLUEPRINTS (PURE 2D DRAFTING)
+       ========================================================= */
+    function generateBlueprintSVG(preset) {
+      if (preset === 'hydraulic_valve') {
+        return `
+          <svg viewBox="0 0 750 480" class="w-full h-auto select-none" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <pattern id="crosshatch" width="8" height="8" patternTransform="rotate(45 0 0)" patternUnits="userSpaceOnUse">
+                <line x1="0" y1="0" x2="0" y2="8" stroke="#0284c7" stroke-width="0.75" />
+              </pattern>
+            </defs>
+
+            <!-- Drawing Border -->
+            <rect x="15" y="15" width="720" height="450" fill="none" stroke="#00f2fe" stroke-width="2"/>
+            <rect x="20" y="20" width="710" height="440" fill="none" stroke="#00f2fe" stroke-width="0.75"/>
+
+            <!-- Centerlines -->
+            <line x1="80" y1="210" x2="480" y2="210" stroke="#f43f5e" stroke-width="1" stroke-dasharray="14,3,4,3" />
+            <line x1="280" y1="70" x2="280" y2="350" stroke="#f43f5e" stroke-width="1" stroke-dasharray="14,3,4,3" />
+            <line x1="160" y1="70" x2="160" y2="350" stroke="#f43f5e" stroke-width="1" stroke-dasharray="14,3,4,3" />
+            <line x1="400" y1="70" x2="400" y2="350" stroke="#f43f5e" stroke-width="1" stroke-dasharray="14,3,4,3" />
+
+            <!-- Main Sectional Hatching Area -->
+            <path d="M 100 120 L 460 120 L 460 150 L 420 150 L 420 180 L 460 180 L 460 240 L 420 240 L 420 270 L 460 270 L 460 300 L 100 300 Z" fill="url(#crosshatch)" stroke="#38bdf8" stroke-width="1.5" />
+
+            <!-- Spool Cavities & Internal Ports -->
+            <rect x="140" y="150" width="40" height="120" fill="#001830" stroke="#00f2fe" stroke-width="2"/>
+            <rect x="260" y="150" width="40" height="120" fill="#001830" stroke="#00f2fe" stroke-width="2"/>
+            <rect x="380" y="150" width="40" height="120" fill="#001830" stroke="#00f2fe" stroke-width="2"/>
+            <rect x="120" y="195" width="320" height="30" fill="#001830" stroke="#00f2fe" stroke-width="2"/>
+
+            <!-- Dimension Lines & Extension Arrows -->
+            <!-- Horizontal Overall 280 mm -->
+            <line x1="100" y1="90" x2="460" y2="90" stroke="#38bdf8" stroke-width="1.2"/>
+            <line x1="100" y1="80" x2="100" y2="120" stroke="#38bdf8" stroke-width="0.8"/>
+            <line x1="460" y1="80" x2="460" y2="120" stroke="#38bdf8" stroke-width="0.8"/>
+            <polygon points="100,90 110,87 110,93" fill="#38bdf8" />
+            <polygon points="460,90 450,87 450,93" fill="#38bdf8" />
+            <text x="265" y="84" fill="#00f2fe" font-size="11" font-weight="bold">280.00 ±0.05</text>
+
+            <!-- Vertical Overall 180 mm -->
+            <line x1="60" y1="120" x2="60" y2="300" stroke="#38bdf8" stroke-width="1.2"/>
+            <line x1="50" y1="120" x2="100" y2="120" stroke="#38bdf8" stroke-width="0.8"/>
+            <line x1="50" y1="300" x2="100" y2="300" stroke="#38bdf8" stroke-width="0.8"/>
+            <polygon points="60,120 57,130 63,130" fill="#38bdf8" />
+            <polygon points="60,300 57,290 63,290" fill="#38bdf8" />
+            <text x="18" y="215" fill="#00f2fe" font-size="11" font-weight="bold" transform="rotate(-90 42 215)">Ø 180.00 H7</text>
+
+            <!-- Port Diameter Callout with Leader -->
+            <path d="M 280 150 L 320 110 L 380 110" fill="none" stroke="#f43f5e" stroke-width="1.2"/>
+            <polygon points="280,150 286,143 289,148" fill="#f43f5e"/>
+            <text x="325" y="105" fill="#f43f5e" font-size="10">Ø 32.00 +0.015/-0.000 (PORT P)</text>
+
+            <!-- GD&T Feature Control Frame -->
+            <g transform="translate(140, 330)">
+              <rect x="0" y="0" width="130" height="24" fill="#001830" stroke="#00f2fe" stroke-width="1"/>
+              <line x1="26" y1="0" x2="26" y2="24" stroke="#00f2fe" stroke-width="1"/>
+              <line x1="80" y1="0" x2="80" y2="24" stroke="#00f2fe" stroke-width="1"/>
+              <line x1="105" y1="0" x2="105" y2="24" stroke="#00f2fe" stroke-width="1"/>
+              <text x="7" y="17" fill="#00f2fe" font-size="14">⌖</text>
+              <text x="32" y="16" fill="#00f2fe" font-size="11">Ø 0.015 Ⓜ</text>
+              <text x="88" y="16" fill="#00f2fe" font-size="11">A</text>
+              <text x="114" y="16" fill="#00f2fe" font-size="11">B</text>
+            </g>
+
+            <!-- Orthographic Right View Projection -->
+            <g transform="translate(520, 120)">
+              <rect x="0" y="0" width="160" height="180" fill="#001830" stroke="#00f2fe" stroke-width="1.5"/>
+              <circle cx="80" cy="90" r="50" fill="none" stroke="#38bdf8" stroke-width="1.5"/>
+              <circle cx="80" cy="90" r="25" fill="none" stroke="#00f2fe" stroke-width="1.5"/>
+              <!-- Bolt Circle -->
+              <circle cx="80" cy="90" r="68" fill="none" stroke="#f43f5e" stroke-dasharray="6,4" stroke-width="1"/>
+              <circle cx="80" cy="22" r="5" fill="#38bdf8"/>
+              <circle cx="80" cy="158" r="5" fill="#38bdf8"/>
+              <circle cx="148" cy="90" r="5" fill="#38bdf8"/>
+              <circle cx="12" cy="90" r="5" fill="#38bdf8"/>
+              <text x="45" y="195" fill="#94a3b8" font-size="9">SECTION A-A / END ELEVATION</text>
+            </g>
+
+            <!-- Official ISO Drafting Title Block -->
+            <g transform="translate(430, 360)">
+              <rect x="0" y="0" width="290" height="90" fill="#001020" stroke="#00f2fe" stroke-width="1.5"/>
+              <line x1="0" y1="22" x2="290" y2="22" stroke="#00f2fe" stroke-width="1"/>
+              <line x1="0" y1="45" x2="290" y2="45" stroke="#00f2fe" stroke-width="1"/>
+              <line x1="0" y1="68" x2="290" y2="68" stroke="#00f2fe" stroke-width="1"/>
+              <line x1="140" y1="22" x2="140" y2="90" stroke="#00f2fe" stroke-width="1"/>
+
+              <text x="10" y="16" fill="#00f2fe" font-size="11" font-weight="bold">AUTOCAD 2D ENGINEERING DRAFT</text>
+              <text x="10" y="37" fill="#94a3b8" font-size="9">DWG NO: ACAD-HYD-7721</text>
+              <text x="150" y="37" fill="#94a3b8" font-size="9">SCALE: 1:1</text>
+              <text x="10" y="60" fill="#94a3b8" font-size="9">MATERIAL: GGG-40 DUCTILE</text>
+              <text x="150" y="60" fill="#94a3b8" font-size="9">PROJECTION: 1ST ANGLE</text>
+              <text x="10" y="82" fill="#38bdf8" font-size="9">SHEET 1 OF 1 (A2)</text>
+              <text x="150" y="82" fill="#38bdf8" font-size="9">STATUS: APPROVED</text>
+            </g>
+          </svg>
+        `;
+      } else {
+        // Flange coupling 2D draft
+        return `
+          <svg viewBox="0 0 750 480" class="w-full h-auto select-none" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <pattern id="hatch2" width="6" height="6" patternTransform="rotate(45 0 0)" patternUnits="userSpaceOnUse">
+                <line x1="0" y1="0" x2="0" y2="6" stroke="#0284c7" stroke-width="0.75" />
+              </pattern>
+            </defs>
+
+            <rect x="15" y="15" width="720" height="450" fill="none" stroke="#00f2fe" stroke-width="2"/>
+            <rect x="20" y="20" width="710" height="440" fill="none" stroke="#00f2fe" stroke-width="0.75"/>
+
+            <line x1="60" y1="220" x2="480" y2="220" stroke="#f43f5e" stroke-width="1.2" stroke-dasharray="14,3,4,3" />
+
+            <!-- Flange Section Top & Bottom -->
+            <path d="M 120 100 L 220 100 L 220 160 L 380 160 L 380 190 L 120 190 Z" fill="url(#hatch2)" stroke="#38bdf8" stroke-width="1.5"/>
+            <path d="M 120 250 L 380 250 L 380 280 L 220 280 L 220 340 L 120 340 Z" fill="url(#hatch2)" stroke="#38bdf8" stroke-width="1.5"/>
+
+            <!-- Center Shaft Hole -->
+            <rect x="120" y="190" width="260" height="60" fill="#001830" stroke="#00f2fe" stroke-width="1.5"/>
+
+            <!-- Flange Bolt Holes -->
+            <rect x="150" y="115" width="25" height="45" fill="#001830" stroke="#f43f5e" stroke-width="1.2"/>
+            <rect x="150" y="280" width="25" height="45" fill="#001830" stroke="#f43f5e" stroke-width="1.2"/>
+
+            <!-- Dimensions -->
+            <line x1="120" y1="80" x2="380" y2="80" stroke="#38bdf8" stroke-width="1"/>
+            <polygon points="120,80 130,77 130,83" fill="#38bdf8"/>
+            <polygon points="380,80 370,77 370,83" fill="#38bdf8"/>
+            <text x="230" y="74" fill="#00f2fe" font-size="11" font-weight="bold">160.00 ±0.1</text>
+
+            <line x1="85" y1="100" x2="85" y2="340" stroke="#38bdf8" stroke-width="1"/>
+            <polygon points="85,100 82,110 88,110" fill="#38bdf8"/>
+            <polygon points="85,340 82,330 88,330" fill="#38bdf8"/>
+            <text x="45" y="225" fill="#00f2fe" font-size="11" font-weight="bold" transform="rotate(-90 70 225)">Ø 240.00</text>
+
+            <!-- Front Circular View -->
+            <g transform="translate(520, 130)">
+              <circle cx="80" cy="90" r="75" fill="#001830" stroke="#00f2fe" stroke-width="1.5"/>
+              <circle cx="80" cy="90" r="55" fill="none" stroke="#f43f5e" stroke-dasharray="6,4" stroke-width="1"/>
+              <circle cx="80" cy="90" r="30" fill="none" stroke="#38bdf8" stroke-width="1.5"/>
+              <!-- 6 Bolts -->
+              <circle cx="80" cy="35" r="5" fill="#f43f5e"/>
+              <circle cx="80" cy="145" r="5" fill="#f43f5e"/>
+              <circle cx="32" cy="62" r="5" fill="#f43f5e"/>
+              <circle cx="128" cy="62" r="5" fill="#f43f5e"/>
+              <circle cx="32" cy="118" r="5" fill="#f43f5e"/>
+              <circle cx="128" cy="118" r="5" fill="#f43f5e"/>
+              <text x="40" y="195" fill="#94a3b8" font-size="9">FRONT PROJECTION</text>
+            </g>
+
+            <!-- Title Block -->
+            <g transform="translate(430, 360)">
+              <rect x="0" y="0" width="290" height="90" fill="#001020" stroke="#00f2fe" stroke-width="1.5"/>
+              <line x1="0" y1="22" x2="290" y2="22" stroke="#00f2fe" stroke-width="1"/>
+              <line x1="0" y1="45" x2="290" y2="45" stroke="#00f2fe" stroke-width="1"/>
+              <line x1="0" y1="68" x2="290" y2="68" stroke="#00f2fe" stroke-width="1"/>
+              <line x1="140" y1="22" x2="140" y2="90" stroke="#00f2fe" stroke-width="1"/>
+
+              <text x="10" y="16" fill="#00f2fe" font-size="11" font-weight="bold">AUTOCAD 2D ENGINEERING DRAFT</text>
+              <text x="10" y="37" fill="#94a3b8" font-size="9">DWG: FLANGE-C45-901</text>
+              <text x="150" y="37" fill="#94a3b8" font-size="9">SCALE: 1:2</text>
+              <text x="10" y="60" fill="#94a3b8" font-size="9">STEEL: C45 NORMALIZED</text>
+              <text x="150" y="60" fill="#94a3b8" font-size="9">KEYWAY: DIN 6885</text>
+              <text x="10" y="82" fill="#38bdf8" font-size="9">SHEET: 1 OF 1</text>
+              <text x="150" y="82" fill="#38bdf8" font-size="9">DRAWN: MECHANICAL ENG</text>
+            </g>
+          </svg>
+        `;
+      }
+    }
+
+    /* Open 2D Blueprint Modal for AutoCAD */
+    function openBlueprintModal(projectId) {
+      const proj = projects.find(p => p.id === projectId);
+      if (!proj) return;
+
+      document.getElementById('bp-title').textContent = proj.title;
+      document.getElementById('bp-desc').textContent = proj.description;
+      document.getElementById('bp-spec-standard').textContent = proj.tolerances || 'ISO 128 / ASME Y14.5M';
+
+      const container = document.getElementById('blueprint-drawing-container');
+      container.innerHTML = generateBlueprintSVG(proj.blueprintPreset || 'hydraulic_valve');
+
+      document.getElementById('blueprint-modal').classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeBlueprintModal() {
+      document.getElementById('blueprint-modal').classList.add('hidden');
+      document.body.style.overflow = 'auto';
+    }
+
+    /* ==========================================================
+       4. 3D VIEWER MODAL LOGIC (NON-AUTOCAD)
+       ========================================================= */
+    function openViewerModal(projectId) {
+      const proj = projects.find(p => p.id === projectId);
+      if (!proj) return;
+
+      // Route AutoCAD directly to 2D Blueprint Viewer
+      if (proj.folder === 'AutoCAD') {
+        openBlueprintModal(projectId);
+        return;
+      }
+
+      active3DProject = proj;
+
+      document.getElementById('modal-part-title').textContent = proj.title;
+      document.getElementById('modal-software-badge').textContent = proj.folder;
+      document.getElementById('modal-spec-software').textContent = proj.folder;
+      document.getElementById('modal-spec-material').textContent = proj.material || 'Engineering Alloy';
+      document.getElementById('modal-spec-tolerances').textContent = proj.tolerances || 'ISO 2768-mK';
+      document.getElementById('modal-spec-process').textContent = proj.process || 'CNC Precision Machining';
+      document.getElementById('modal-spec-gdt').textContent = proj.gdt || '⌖ 0.02 | A | B';
+      document.getElementById('modal-spec-desc').textContent = proj.description || '';
+
+      document.getElementById('viewer-modal').classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+
+      setTimeout(() => {
+        onModalResize();
+        loadModelIntoModal(proj);
+      }, 50);
+    }
+
+    function closeViewerModal() {
+      document.getElementById('viewer-modal').classList.add('hidden');
+      document.body.style.overflow = 'auto';
+    }
+
+    /* ==========================================================
+       5. MY WORK (FOLDER FILTERING & CARDS RENDERING)
+       ========================================================= */
+    function getSoftwareIcon(folder) {
+      switch(folder) {
+        case 'SolidWorks': return 'fa-solid fa-shapes text-red-500';
+        case 'CATIA V5': return 'fa-solid fa-plane text-blue-400';
+        case 'Siemens NX': return 'fa-solid fa-microchip text-emerald-400';
+        case 'ANSYS': return 'fa-solid fa-wave-square text-amber-400';
+        case 'AutoCAD': return 'fa-solid fa-compass-drafting text-rose-500';
+        case 'Fusion 360': return 'fa-solid fa-gear text-orange-400';
+        default: return 'fa-solid fa-cube text-cyan-400';
+      }
+    }
+
+    function filterFolder(folder) {
+      currentFolderFilter = folder;
+
+      // Update folder tabs UI
+      document.querySelectorAll('.folder-tab').forEach(tab => {
+        if (tab.getAttribute('data-folder') === folder) {
+          tab.classList.add('border-cyan-400', 'bg-cyan-950/40', 'shadow-[0_0_15px_rgba(0,242,254,0.2)]');
+          tab.classList.remove('border-slate-800', 'bg-slate-900/60');
+        } else {
+          tab.classList.remove('border-cyan-400', 'bg-cyan-950/40', 'shadow-[0_0_15px_rgba(0,242,254,0.2)]');
+          tab.classList.add('border-slate-800', 'bg-slate-900/60');
+        }
+      });
+
+      document.getElementById('active-folder-name').textContent = 
+        folder === 'All' ? 'All Design Folders' : `${folder} Folder`;
+
+      renderCards();
+    }
+
+    function renderCards() {
+      const grid = document.getElementById('designs-grid');
+      if (!grid) return;
+      grid.innerHTML = '';
+
+      const filtered = currentFolderFilter === 'All' 
+        ? projects 
+        : projects.filter(p => p.folder === currentFolderFilter);
+
+      if (filtered.length === 0) {
+        grid.innerHTML = `
+          <div class="col-span-full py-16 text-center text-slate-500 font-mono">
+            <i class="fa-regular fa-folder-open text-4xl mb-3 text-slate-600 block"></i>
+            No designs found in this folder. Click "Add Design" to insert a project here.
+          </div>
+        `;
+        return;
+      }
+
+      filtered.forEach(project => {
+        const is2D = project.folder === 'AutoCAD';
+        const card = document.createElement('div');
+        card.className = "group relative rounded-2xl bg-slate-900/70 border border-slate-800 hover:border-cyan-500/50 transition-all duration-300 overflow-hidden flex flex-col justify-between hover:shadow-[0_0_25px_rgba(0,242,254,0.15)]";
+
+        card.innerHTML = `
+          <!-- Card Header & Badge -->
+          <div class="p-5 pb-3">
+            <div class="flex items-center justify-between gap-2 mb-3">
+              <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded text-xs font-mono font-semibold bg-slate-950 border border-slate-800 text-slate-300">
+                <i class="${getSoftwareIcon(project.folder)}"></i> ${project.folder}
+              </span>
+              
+              <span class="text-[10px] font-mono px-2 py-0.5 rounded ${is2D ? 'bg-rose-950/80 text-rose-400 border border-rose-500/30' : 'bg-cyan-950/80 text-cyan-400 border border-cyan-500/30'} flex items-center gap-1">
+                <i class="fa-solid ${is2D ? 'fa-compass-drafting' : 'fa-cube'}"></i> ${is2D ? '2D Drafting' : '3D CAD'}
+              </span>
+            </div>
+
+            <h3 class="text-base font-bold text-white group-hover:text-cyan-400 transition-colors line-clamp-1 font-mono">
+              ${project.title}
+            </h3>
+
+            <p class="text-xs text-slate-400 mt-2 line-clamp-2 leading-relaxed">
+              ${project.description}
+            </p>
+          </div>
+
+          <!-- Card Thumbnail Preview Area -->
+          <div class="px-5 py-2">
+            <div onclick="${is2D ? `openBlueprintModal('${project.id}')` : `openViewerModal('${project.id}')`}" class="w-full h-40 rounded-xl bg-slate-950 border border-slate-800/80 flex items-center justify-center cursor-pointer relative overflow-hidden group-hover:border-cyan-500/40 transition-colors">
+              ${is2D ? `
+                <!-- 2D Drafting Blueprint Vector Mock -->
+                <div class="w-full h-full blueprint-paper flex items-center justify-center p-3 opacity-80 group-hover:opacity-100 transition-opacity">
+                  <svg viewBox="0 0 200 120" class="w-full h-full stroke-cyan-400 fill-none stroke-[1.2]">
+                    <rect x="15" y="15" width="170" height="90" stroke="#00f2fe" stroke-width="1" stroke-dasharray="2,2"/>
+                    <circle cx="100" cy="60" r="30" stroke="#38bdf8"/>
+                    <circle cx="100" cy="60" r="14" stroke="#f43f5e"/>
+                    <line x1="25" y1="60" x2="175" y2="60" stroke="#f43f5e" stroke-dasharray="4,2"/>
+                    <line x1="100" y1="20" x2="100" y2="100" stroke="#f43f5e" stroke-dasharray="4,2"/>
+                  </svg>
+                  <div class="absolute bottom-2 right-2 text-[9px] font-mono text-rose-400 bg-slate-950/90 px-1.5 py-0.5 rounded border border-rose-500/30">
+                    <i class="fa-solid fa-drafting-compass"></i> 2D DWG Sheet
+                  </div>
+                </div>
+              ` : `
+                <!-- 3D Rotating Mesh Mock Thumbnail -->
+                <div class="w-full h-full flex flex-col items-center justify-center bg-gradient-to-b from-slate-950 to-slate-900 group-hover:from-slate-900 group-hover:to-slate-950 transition-colors">
+                  <div class="w-14 h-14 rounded-full bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400 group-hover:scale-110 transition-transform">
+                    <i class="fa-solid fa-cube text-2xl"></i>
+                  </div>
+                  <span class="text-[10px] font-mono text-cyan-400/90 mt-2 flex items-center gap-1">
+                    <i class="fa-solid fa-rotate text-[8px] animate-spin"></i> Interactive 3D Model
+                  </span>
+                </div>
+              `}
+              <div class="absolute inset-0 bg-cyan-500/5 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-[1px]">
+                <span class="px-3 py-1.5 rounded-lg bg-slate-950/90 text-cyan-400 font-mono text-xs border border-cyan-500/40 shadow-lg">
+                  <i class="fa-solid fa-eye text-xs mr-1"></i> Inspect
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Specifications Tags -->
+          <div class="p-5 pt-3">
+            <div class="space-y-1.5 text-[11px] font-mono text-slate-400 bg-slate-950/50 p-2.5 rounded-lg border border-slate-800/60 mb-3">
+              <div class="flex justify-between truncate">
+                <span class="text-slate-500">Material:</span>
+                <span class="text-slate-300 truncate max-w-[170px]">${project.material || 'Alloy'}</span>
+              </div>
+              <div class="flex justify-between truncate">
+                <span class="text-slate-500">Tolerance:</span>
+                <span class="text-cyan-400 truncate max-w-[170px]">${project.tolerances || 'Standard'}</span>
+              </div>
+            </div>
+
+            <!-- Footer actions -->
+            <div class="pt-2 border-t border-slate-800 flex items-center justify-between">
+              <button onclick="${is2D ? `openBlueprintModal('${project.id}')` : `openViewerModal('${project.id}')`}" class="px-3.5 py-2 rounded-lg ${is2D ? 'bg-rose-500/10 hover:bg-rose-500 text-rose-400 hover:text-white border border-rose-500/30' : 'bg-cyan-500/10 hover:bg-cyan-500 text-cyan-400 hover:text-slate-950 border border-cyan-500/30'} text-xs font-mono font-bold transition-all flex items-center gap-1.5">
+                <i class="fa-solid ${is2D ? 'fa-compass-drafting' : 'fa-cube'}"></i> ${is2D ? 'Inspect 2D Blueprint' : 'Inspect in 3D'}
+              </button>
+              
+              <div class="flex items-center gap-2">
+                <span class="text-[10px] font-mono text-cyan-400/80 bg-slate-950 px-2 py-1 rounded border border-slate-800 flex items-center gap-1">
+                  <i class="fa-solid fa-eye text-[9px]"></i> View Only
+                </span>
+                ${!project.isDefault ? `
+                  <button onclick="deleteProject('${project.id}')" title="Delete custom design" class="text-slate-500 hover:text-red-400 p-1.5 text-xs transition-colors">
+                    <i class="fa-solid fa-trash-can"></i>
+                  </button>
+                ` : ''}
+              </div>
+            </div>
+          </div>
+        `;
+
+        grid.appendChild(card);
+      });
+
+      updateFolderCounters();
+    }
+
+    function updateFolderCounters() {
+      const folders = ['SolidWorks', 'CATIA V5', 'Siemens NX', 'ANSYS', 'AutoCAD', 'Fusion 360'];
+      folders.forEach(f => {
+        const count = projects.filter(p => p.folder === f).length;
+        const el = document.getElementById(`count-${f}`);
+        if (el) el.textContent = count;
+      });
+      const allCountEl = document.querySelector('.folder-tab[data-folder="All"] .count-badge');
+      if (allCountEl) allCountEl.textContent = projects.length;
+    }
+
+    function deleteProject(id) {
+      projects = projects.filter(p => p.id !== id);
+      saveData();
+      renderCards();
+      showToast("Design removed from portfolio.");
+    }
+
+    /* ==========================================================
+       6. ADD DESIGN (ADAPTIVE 3D CAD OR AUTOCAD 2D DRAFTING)
+       ========================================================== */
+    let uploadedSTLString = null;
+
+    function openUploadModal() {
+      document.getElementById('upload-modal').classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+      handleSoftwareSelectChange();
+    }
+
+    function closeUploadModal() {
+      document.getElementById('upload-modal').classList.add('hidden');
+      document.body.style.overflow = 'auto';
+      document.getElementById('add-design-form').reset();
+      clearAttachedFile();
+    }
+
+    function handleSoftwareSelectChange() {
+      const select = document.getElementById('upload-folder');
+      const modeIndicator = document.getElementById('software-mode-indicator');
+      const dropZone = document.getElementById('drop-zone');
+
+      if (select.value === 'AutoCAD') {
+        modeIndicator.textContent = 'Mode: 2D Drafting (AutoCAD Blueprints)';
+        modeIndicator.className = 'text-[11px] font-mono text-rose-400 mt-1';
+        dropZone.querySelector('p').innerHTML = 'Attach 2D drawing (.dwg, .dxf, .svg) or <span class="text-rose-400 underline">browse</span>';
+      } else {
+        modeIndicator.textContent = 'Mode: 3D CAD Rotating Part Inspection';
+        modeIndicator.className = 'text-[11px] font-mono text-cyan-400 mt-1';
+        dropZone.querySelector('p').innerHTML = 'Attach 3D part (.stl) or <span class="text-cyan-400 underline">browse</span>';
+      }
+    }
+
+    function handleFileSelect(input) {
+      if (input.files && input.files[0]) {
+        const file = input.files[0];
+        document.getElementById('attached-file-name').textContent = file.name;
+        document.getElementById('attached-file-badge').classList.remove('hidden');
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          uploadedSTLString = e.target.result;
+        };
+        // Read as binary string or array buffer
+        reader.readAsArrayBuffer(file);
+      }
+    }
+
+    function clearAttachedFile() {
+      document.getElementById('upload-file-input').value = '';
+      document.getElementById('attached-file-badge').classList.add('hidden');
+      uploadedSTLString = null;
+    }
+
+    function handleDesignUpload(event) {
+      event.preventDefault();
+
+      const title = document.getElementById('upload-title').value.trim();
+      const folder = document.getElementById('upload-folder').value;
+      const material = document.getElementById('upload-material').value.trim() || 'Alloy Steel / Standard Spec';
+      const tolerances = document.getElementById('upload-tolerances').value.trim() || 'ISO 2768-mK';
+      const process = document.getElementById('upload-process').value.trim() || 'Precision CNC Machining';
+      const gdt = document.getElementById('upload-gdt').value.trim() || '⌖ 0.02 | A | B';
+      const desc = document.getElementById('upload-desc').value.trim() || 'Engineered mechanical CAD asset created with strict functional constraints.';
+
+      const isAutoCAD = (folder === 'AutoCAD');
+
+      const newProject = {
+        id: 'custom-' + Date.now(),
+        title: title,
+        folder: folder,
+        type: isAutoCAD ? '2d' : '3d',
+        presetShape: isAutoCAD ? null : 'spindle',
+        blueprintPreset: isAutoCAD ? 'hydraulic_valve' : null,
+        material: material,
+        tolerances: tolerances,
+        process: process,
+        gdt: gdt,
+        description: desc,
+        customSTLData: uploadedSTLString,
+        isDefault: false
+      };
+
+      projects.unshift(newProject);
+      saveData();
+      closeUploadModal();
+      filterFolder(folder);
+      showToast(`Added "${title}" to ${folder} folder!`);
+
+      // Automatically inspect the newly added part
+      setTimeout(() => {
+        if (isAutoCAD) {
+          openBlueprintModal(newProject.id);
+        } else {
+          openViewerModal(newProject.id);
+        }
+      }, 300);
+    }
+
+    /* Toast Notification Utility */
+    function showToast(message) {
+      const toast = document.getElementById('toast');
+      document.getElementById('toast-message').textContent = message;
+      toast.classList.remove('translate-y-20', 'opacity-0');
+      toast.classList.add('translate-y-0', 'opacity-100');
+
+      setTimeout(() => {
+        toast.classList.remove('translate-y-0', 'opacity-100');
+        toast.classList.add('translate-y-20', 'opacity-0');
+      }, 3500);
+    }
+
+    /* Global keydown listener for ESC key */
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        closeViewerModal();
+        closeBlueprintModal();
+        closeUploadModal();
+      }
+    });
+
+    /* ==========================================================
+       7. WINDOW ONLOAD BOOTSTRAP
+       ========================================================== */
+    window.onload = function() {
+      initData();
+      initHero3D();
+    };
+  </script>
+</body>
+</html>
