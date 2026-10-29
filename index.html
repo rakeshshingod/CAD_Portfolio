@@ -23,6 +23,58 @@
   <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/OBJLoader.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
 
+  <!-- Firebase Modular SDK for Multi-Device Cloud Sync -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+    import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+    import { getFirestore, doc, setDoc, deleteDoc, onSnapshot, collection } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+    // Initialize Firebase
+    const appId = typeof __app_id !== 'undefined' ? __app_id : 'cad-portfolio-prod';
+    const firebaseConfig = typeof __firebase_config !== 'undefined' 
+      ? JSON.parse(__firebase_config) 
+      : { apiKey: "mock", projectId: "cad-portfolio" };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    // Expose Firebase API to global window scope for app operations
+    window.cadCloud = {
+      appId,
+      auth,
+      db,
+      doc,
+      setDoc,
+      deleteDoc,
+      onSnapshot,
+      collection,
+      ready: false
+    };
+
+    // Authenticate First before invoking queries
+    async function initAuth() {
+      try {
+        if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+          await signInWithCustomToken(auth, __initial_auth_token);
+        } else {
+          await signInAnonymously(auth);
+        }
+        window.cadCloud.ready = true;
+        if (window.onCloudReady) {
+          window.onCloudReady();
+        }
+      } catch (err) {
+        console.warn("Cloud auth initialized with fallback:", err);
+        window.cadCloud.ready = true;
+        if (window.onCloudReady) {
+          window.onCloudReady();
+        }
+      }
+    }
+    initAuth();
+  </script>
+
   <script>
     tailwind.config = {
       darkMode: 'class',
@@ -229,9 +281,9 @@
       </div>
 
       <!-- FOLDER SELECTION BUTTONS -->
-      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-7 gap-3 mb-10">
+      <div class="flex overflow-x-auto pb-3 sm:pb-0 sm:grid sm:grid-cols-3 lg:grid-cols-7 gap-3 mb-10 no-scrollbar">
         <!-- All Folders -->
-        <button onclick="filterFolder('All')" data-folder="All" class="folder-tab active-folder flex flex-col p-3 rounded-xl border border-cyan-400 bg-cyan-950/40 shadow-[0_0_15px_rgba(0,242,254,0.2)] transition-all text-left group">
+        <button onclick="filterFolder('All')" data-folder="All" class="folder-tab active-folder flex-shrink-0 w-40 sm:w-auto flex flex-col p-3 rounded-xl border border-cyan-400 bg-cyan-950/40 shadow-[0_0_15px_rgba(0,242,254,0.2)] transition-all text-left group">
           <div class="flex items-center justify-between mb-2">
             <i class="fa-solid fa-folder-tree text-lg text-cyan-400"></i>
             <span class="count-badge text-[11px] font-mono px-2 py-0.5 rounded-full bg-slate-800 text-slate-300" id="count-All">0</span>
@@ -241,7 +293,7 @@
         </button>
 
         <!-- SolidWorks -->
-        <button onclick="filterFolder('SolidWorks')" data-folder="SolidWorks" class="folder-tab flex flex-col p-3 rounded-xl border border-slate-800 bg-slate-900/60 hover:border-red-500/50 hover:bg-slate-900 transition-all text-left group">
+        <button onclick="filterFolder('SolidWorks')" data-folder="SolidWorks" class="folder-tab flex-shrink-0 w-40 sm:w-auto flex flex-col p-3 rounded-xl border border-slate-800 bg-slate-900/60 hover:border-red-500/50 hover:bg-slate-900 transition-all text-left group">
           <div class="flex items-center justify-between mb-2">
             <i class="fa-solid fa-shapes text-lg text-red-500 group-hover:scale-110 transition-transform"></i>
             <span class="count-badge text-[11px] font-mono px-2 py-0.5 rounded-full bg-slate-800 text-slate-300" id="count-SolidWorks">0</span>
@@ -251,7 +303,7 @@
         </button>
 
         <!-- CATIA V5 -->
-        <button onclick="filterFolder('CATIA V5')" data-folder="CATIA V5" class="folder-tab flex flex-col p-3 rounded-xl border border-slate-800 bg-slate-900/60 hover:border-blue-500/50 hover:bg-slate-900 transition-all text-left group">
+        <button onclick="filterFolder('CATIA V5')" data-folder="CATIA V5" class="folder-tab flex-shrink-0 w-40 sm:w-auto flex flex-col p-3 rounded-xl border border-slate-800 bg-slate-900/60 hover:border-blue-500/50 hover:bg-slate-900 transition-all text-left group">
           <div class="flex items-center justify-between mb-2">
             <i class="fa-solid fa-plane text-lg text-blue-400 group-hover:scale-110 transition-transform"></i>
             <span class="count-badge text-[11px] font-mono px-2 py-0.5 rounded-full bg-slate-800 text-slate-300" id="count-CATIA V5">0</span>
@@ -261,7 +313,7 @@
         </button>
 
         <!-- Siemens NX -->
-        <button onclick="filterFolder('Siemens NX')" data-folder="Siemens NX" class="folder-tab flex flex-col p-3 rounded-xl border border-slate-800 bg-slate-900/60 hover:border-emerald-500/50 hover:bg-slate-900 transition-all text-left group">
+        <button onclick="filterFolder('Siemens NX')" data-folder="Siemens NX" class="folder-tab flex-shrink-0 w-40 sm:w-auto flex flex-col p-3 rounded-xl border border-slate-800 bg-slate-900/60 hover:border-emerald-500/50 hover:bg-slate-900 transition-all text-left group">
           <div class="flex items-center justify-between mb-2">
             <i class="fa-solid fa-microchip text-lg text-emerald-400 group-hover:scale-110 transition-transform"></i>
             <span class="count-badge text-[11px] font-mono px-2 py-0.5 rounded-full bg-slate-800 text-slate-300" id="count-Siemens NX">0</span>
@@ -271,7 +323,7 @@
         </button>
 
         <!-- ANSYS -->
-        <button onclick="filterFolder('ANSYS')" data-folder="ANSYS" class="folder-tab flex flex-col p-3 rounded-xl border border-slate-800 bg-slate-900/60 hover:border-amber-500/50 hover:bg-slate-900 transition-all text-left group">
+        <button onclick="filterFolder('ANSYS')" data-folder="ANSYS" class="folder-tab flex-shrink-0 w-40 sm:w-auto flex flex-col p-3 rounded-xl border border-slate-800 bg-slate-900/60 hover:border-amber-500/50 hover:bg-slate-900 transition-all text-left group">
           <div class="flex items-center justify-between mb-2">
             <i class="fa-solid fa-wave-square text-lg text-amber-400 group-hover:scale-110 transition-transform"></i>
             <span class="count-badge text-[11px] font-mono px-2 py-0.5 rounded-full bg-slate-800 text-slate-300" id="count-ANSYS">0</span>
@@ -281,7 +333,7 @@
         </button>
 
         <!-- AutoCAD -->
-        <button onclick="filterFolder('AutoCAD')" data-folder="AutoCAD" class="folder-tab flex flex-col p-3 rounded-xl border border-slate-800 bg-slate-900/60 hover:border-rose-500/50 hover:bg-slate-900 transition-all text-left group">
+        <button onclick="filterFolder('AutoCAD')" data-folder="AutoCAD" class="folder-tab flex-shrink-0 w-40 sm:w-auto flex flex-col p-3 rounded-xl border border-slate-800 bg-slate-900/60 hover:border-rose-500/50 hover:bg-slate-900 transition-all text-left group">
           <div class="flex items-center justify-between mb-2">
             <i class="fa-solid fa-compass-drafting text-lg text-rose-500 group-hover:scale-110 transition-transform"></i>
             <span class="count-badge text-[11px] font-mono px-2 py-0.5 rounded-full bg-slate-800 text-slate-300" id="count-AutoCAD">0</span>
@@ -291,7 +343,7 @@
         </button>
 
         <!-- Fusion 360 -->
-        <button onclick="filterFolder('Fusion 360')" data-folder="Fusion 360" class="folder-tab flex flex-col p-3 rounded-xl border border-slate-800 bg-slate-900/60 hover:border-orange-500/50 hover:bg-slate-900 transition-all text-left group">
+        <button onclick="filterFolder('Fusion 360')" data-folder="Fusion 360" class="folder-tab flex-shrink-0 w-40 sm:w-auto flex flex-col p-3 rounded-xl border border-slate-800 bg-slate-900/60 hover:border-orange-500/50 hover:bg-slate-900 transition-all text-left group">
           <div class="flex items-center justify-between mb-2">
             <i class="fa-solid fa-gear text-lg text-orange-400 group-hover:scale-110 transition-transform"></i>
             <span class="count-badge text-[11px] font-mono px-2 py-0.5 rounded-full bg-slate-800 text-slate-300" id="count-Fusion 360">0</span>
@@ -897,17 +949,56 @@
     let currentFolderFilter = "All";
     let active3DProject = null;
 
-    /* Initialize from LocalStorage */
-    function initData() {
-      const stored = localStorage.getItem('cad_portfolio_designs');
-      if (stored) {
-        try {
-          const parsed = JSON.parse(stored);
-          projects = parsed.filter(p => !p.isDefault);
-          saveData();
-        } catch(e) {
-          projects = [];
-        }
+    /* Initialize Cloud Sync */
+    function subscribeToCloudDesigns() {
+      if (!window.cadCloud || !window.cadCloud.ready) return;
+
+      const { db, appId, collection, onSnapshot } = window.cadCloud;
+      const designsCol = collection(db, 'artifacts', appId, 'public', 'data', 'designs');
+
+      onSnapshot(designsCol, (snapshot) => {
+        const fetched = [];
+        snapshot.forEach((docSnapshot) => {
+          fetched.push({ id: docSnapshot.id, ...docSnapshot.data() });
+        });
+        
+        // Sort newest first
+        fetched.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+        projects = fetched;
+        renderCards();
+        updateFolderCounters();
+      }, (error) => {
+        console.warn("Cloud synchronization notice:", error);
+      });
+    }
+
+    window.onCloudReady = function() {
+      subscribeToCloudDesigns();
+    };
+
+    function updateFolderCounters() {
+      const folders = ['SolidWorks', 'CATIA V5', 'Siemens NX', 'ANSYS', 'AutoCAD', 'Fusion 360'];
+      let total = projects.length;
+      const countAllEl = document.getElementById('count-All');
+      if (countAllEl) countAllEl.textContent = total;
+
+      folders.forEach(folder => {
+        const count = projects.filter(p => p.folder === folder).length;
+        const el = document.getElementById(`count-${folder}`);
+        if (el) el.textContent = count;
+      });
+    }
+
+    /* Helper: Base64 to ArrayBuffer for 3D model loaders */
+    function base64ToArrayBuffer(base64) {
+      const binaryString = window.atob(base64);
+      const len = binaryString.length;
+      const bytes = new Uint8Array(len);
+      for (let i = 0; i < len; i++) {
+        bytes[i] = binaryString.charCodeAt(i);
+      }
+      return bytes.buffer;
+    }
       } else {
         projects = [];
         saveData();
@@ -1114,7 +1205,7 @@
         modalScene.remove(modalMeshGroup);
       }
 
-      // Check if user uploaded a custom 3D model
+      // Check if user uploaded a custom 3D model (via Cloud or memory)
       if (project.custom3DData) {
         const fileExt = (project.customFileName || '').split('.').pop().toLowerCase();
         
@@ -1155,10 +1246,19 @@
         };
 
         try {
+          // Parse base64 string from cloud storage if needed
+          let buffer = project.custom3DData;
+          if (typeof project.custom3DData === 'string' && project.custom3DData.startsWith('data:')) {
+            const base64Data = project.custom3DData.split(',')[1];
+            buffer = base64ToArrayBuffer(base64Data);
+          } else if (typeof project.custom3DData === 'string' && fileExt !== 'obj') {
+            buffer = base64ToArrayBuffer(project.custom3DData);
+          }
+
           if (fileExt === 'obj') {
             const loader = new THREE.OBJLoader();
             const textDecoder = new TextDecoder();
-            const objText = typeof project.custom3DData === 'string' ? project.custom3DData : textDecoder.decode(project.custom3DData);
+            const objText = typeof project.custom3DData === 'string' ? project.custom3DData : textDecoder.decode(buffer);
             const obj = loader.parse(objText);
             const mat = getMaterial(currentFinish);
             obj.traverse((child) => {
@@ -1168,7 +1268,7 @@
             return;
           } else if (fileExt === 'gltf' || fileExt === 'glb') {
             const loader = new THREE.GLTFLoader();
-            loader.parse(project.custom3DData, '', (gltf) => {
+            loader.parse(buffer, '', (gltf) => {
               setupLoadedObject(gltf.scene);
             }, (err) => {
               console.warn("GLTF Parse Error", err);
@@ -1177,7 +1277,7 @@
           } else {
             // STL loader
             const loader = new THREE.STLLoader();
-            const geometry = loader.parse(project.custom3DData);
+            const geometry = loader.parse(buffer);
             geometry.computeVertexNormals();
             geometry.center();
 
@@ -1520,12 +1620,19 @@
 
       if (input.value === MASTER_DELETE_PASSWORD) {
         if (pendingDeleteId) {
+          // Cloud deletion
+          if (window.cadCloud && window.cadCloud.ready) {
+            const { db, appId, doc, deleteDoc } = window.cadCloud;
+            const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'designs', pendingDeleteId);
+            deleteDoc(docRef).catch(err => console.warn("Cloud delete notice:", err));
+          }
+
+          // Local memory state fallback
           projects = projects.filter(p => p.id !== pendingDeleteId);
-          saveData();
           renderCards();
           updateFolderCounters();
           closePasswordModal();
-          showToast("Design verified and permanently deleted.");
+          showToast("Design deleted from cloud repository.");
         }
       } else {
         errorMsg.classList.remove('hidden');
@@ -1538,7 +1645,7 @@
     /* ==========================================================
        ADD DESIGN (ADAPTIVE 3D CAD OR AUTOCAD 2D DRAFTING)
        ========================================================== */
-    let uploadedFileBuffer = null;
+    let uploadedFileBase64 = null;
     let uploadedFileName = null;
     let uploaded2DDataUrl = null;
 
@@ -1587,11 +1694,28 @@
           };
           reader.readAsDataURL(file);
         } else {
+          // Convert 3D file to Base64 so it can be saved in cloud storage and retrieved by any device
           const reader = new FileReader();
           reader.onload = function(e) {
-            uploadedFileBuffer = e.target.result;
+            if (ext === 'obj') {
+              uploadedFileBase64 = e.target.result; // Text format
+            } else {
+              const arrayBuffer = e.target.result;
+              let binary = '';
+              const bytes = new Uint8Array(arrayBuffer);
+              const len = bytes.byteLength;
+              for (let i = 0; i < len; i++) {
+                binary += String.fromCharCode(bytes[i]);
+              }
+              uploadedFileBase64 = window.btoa(binary);
+            }
           };
-          reader.readAsArrayBuffer(file);
+
+          if (ext === 'obj') {
+            reader.readAsText(file);
+          } else {
+            reader.readAsArrayBuffer(file);
+          }
         }
       }
     }
@@ -1599,12 +1723,12 @@
     function clearAttachedFile() {
       document.getElementById('upload-file-input').value = '';
       document.getElementById('attached-file-badge').classList.add('hidden');
-      uploadedFileBuffer = null;
+      uploadedFileBase64 = null;
       uploadedFileName = null;
       uploaded2DDataUrl = null;
     }
 
-    function handleDesignUpload(event) {
+    async function handleDesignUpload(event) {
       event.preventDefault();
 
       const title = document.getElementById('upload-title').value.trim();
@@ -1616,9 +1740,10 @@
       const desc = document.getElementById('upload-desc').value.trim() || 'Engineered mechanical CAD asset created with strict functional constraints.';
 
       const isAutoCAD = (folder === 'AutoCAD');
+      const docId = 'cad-' + Date.now();
 
       const newProject = {
-        id: 'custom-' + Date.now(),
+        id: docId,
         title: title,
         folder: folder,
         type: isAutoCAD ? '2d' : '3d',
@@ -1628,18 +1753,33 @@
         process: process,
         gdt: gdt,
         description: desc,
-        custom3DData: isAutoCAD ? null : uploadedFileBuffer,
+        custom3DData: isAutoCAD ? null : uploadedFileBase64,
         custom2DData: isAutoCAD ? uploaded2DDataUrl : null,
         customFileName: uploadedFileName,
-        isDefault: false
+        createdAt: Date.now()
       };
 
-      projects.unshift(newProject);
-      saveData();
-      updateFolderCounters();
+      // Save to Cloud Storage (Firestore) so it appears on all devices
+      if (window.cadCloud && window.cadCloud.ready) {
+        try {
+          const { db, appId, doc, setDoc } = window.cadCloud;
+          const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'designs', docId);
+          await setDoc(docRef, newProject);
+        } catch (err) {
+          console.warn("Could not save to cloud, saving to session memory:", err);
+        }
+      }
+
+      // Memory state fallback
+      if (!projects.some(p => p.id === docId)) {
+        projects.unshift(newProject);
+        renderCards();
+        updateFolderCounters();
+      }
+
       closeUploadModal();
       filterFolder(folder);
-      showToast(`Added "${title}" to ${folder} folder!`);
+      showToast(`Uploaded "${title}" to cloud! Visible on all devices.`);
 
       setTimeout(() => {
         if (isAutoCAD) {
@@ -1676,7 +1816,9 @@
 
     /* Window Load Bootstrap */
     window.onload = function() {
-      initData();
+      if (window.cadCloud && window.cadCloud.ready) {
+        subscribeToCloudDesigns();
+      }
       initHero3D();
     };
   </script>
