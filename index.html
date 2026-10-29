@@ -861,6 +861,9 @@
     /* ==========================================================
        1. DATA STORE: DEFAULT CAD & 2D DRAFTING PROJECTS
        ========================================================== */
+    // Pre-included designs have been emptied so only your uploaded designs appear
+    const DEFAULT_PROJECTS = [];
+
     let projects = [];
     let currentFolderFilter = "All";
     let active3DProject = null;
@@ -870,12 +873,15 @@
       const stored = localStorage.getItem('cad_portfolio_designs');
       if (stored) {
         try {
-          projects = JSON.parse(stored);
+          const parsed = JSON.parse(stored);
+          // Filter out any legacy pre-included default projects stored in browser cache
+          projects = parsed.filter(p => !p.isDefault);
+          saveData();
         } catch(e) {
-          projects = [...DEFAULT_PROJECTS];
+          projects = [];
         }
       } else {
-        projects = [...DEFAULT_PROJECTS];
+        projects = [];
         saveData();
       }
       renderCards();
